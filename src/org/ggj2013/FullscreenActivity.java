@@ -68,6 +68,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		setContentView(R.layout.activity_fullscreen);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
@@ -141,13 +142,22 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	protected void onResume() {
 		super.onResume();
 
-		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_GAME);
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
 				SensorManager.SENSOR_DELAY_NORMAL);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		sensorManager.unregisterListener(this,
+				sensorManager.getDefaultSensor((Sensor.TYPE_ACCELEROMETER)));
+		sensorManager.unregisterListener(this,
+				sensorManager.getDefaultSensor((Sensor.TYPE_MAGNETIC_FIELD)));
 	}
 
 	@Override
