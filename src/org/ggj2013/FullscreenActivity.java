@@ -205,11 +205,13 @@ public class FullscreenActivity extends Activity implements
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (gameView.game.settingsBounds.contains((int) event.getX(),
-				(int) event.getY())) {
+		if (gameView.game.settingsBounds != null
+				&& gameView.game.settingsBounds.contains((int) event.getX(),
+						(int) event.getY())) {
 			orientationOffset = _lastOrientation;
-		} else if (gameView.game.resetBounds.contains((int) event.getX(),
-				(int) event.getY())) {
+		} else if (gameView.game.resetBounds != null
+				&& gameView.game.resetBounds.contains((int) event.getX(),
+						(int) event.getY())) {
 			gameView.game.restart();
 		}
 
