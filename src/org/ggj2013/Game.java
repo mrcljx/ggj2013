@@ -1,16 +1,33 @@
 package org.ggj2013;
 
+import android.graphics.Canvas;
+import android.util.Log;
+
 public class Game {
 	private long timeDiff = 2000000; // 2ms
 	private long lastUpdate = -1;
 	private Room currentRoom;
+	private int currentLevel;
 
 	public Game() {
-		currentRoom = new Room();
+		restart();
 	}
 
 	public void restart() {
-		currentRoom = new Room();
+		currentRoom = null;
+		currentLevel = 0;
+		onNextLevel();
+	}
+
+	public void onNextLevel() {
+		currentLevel++;
+
+		if (currentLevel == 10) {
+			currentRoom = null;
+			Log.e("GAME", "WON!");
+		} else {
+			currentRoom = new Room();
+		}
 	}
 
 	public void onUpdate() {
@@ -22,13 +39,13 @@ public class Game {
 		}
 
 		if (currentRoom != null) {
-			this.currentRoom.onUpdate(timeDiff);
+			currentRoom.onUpdate(timeDiff);
 		}
 	}
 
-	public void onRender() {
+	public void onRender(Canvas c) {
 		if (currentRoom != null) {
-			this.currentRoom.onRender();
+			currentRoom.onRender(c);
 		}
 	}
 }

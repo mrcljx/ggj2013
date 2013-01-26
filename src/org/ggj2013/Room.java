@@ -2,6 +2,8 @@ package org.ggj2013;
 
 import java.util.LinkedList;
 
+import android.graphics.Canvas;
+
 public class Room {
 
 	enum Status {
@@ -47,7 +49,7 @@ public class Room {
 
 	}
 
-	public void onRender() {
+	public void onRender(Canvas c) {
 		// Whoa! Fancy graphics... not! :-P
 	}
 }
