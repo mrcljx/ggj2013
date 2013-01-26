@@ -195,12 +195,7 @@ public class FullscreenActivity extends Activity implements
 
 	public void vibrate() {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-		int dot = 300;
-		int gap = 2000;
-		long[] pattern = { 0, dot, gap, dot, gap };
-
-		v.vibrate(pattern, -1);
+		v.vibrate(50);
 	}
 
 	@Override

@@ -5,13 +5,10 @@ import java.util.Map;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.util.Log;
 
 public class SoundManager {
 	private final Context appContext;
-	private SoundPool sndPool;
-	private final float rate = 1.0f;
 
 	public static final float[] BALANCE_FULL_RIGHT = new float[] { 0.0f, 1.0f };
 	public static final float[] BALANCE_HALF_RIGHT = new float[] { 0.5f, 1.0f };
@@ -27,9 +24,6 @@ public class SoundManager {
 
 	public Map<String, Integer> sounds = new HashMap<String, Integer>();
 	public Map<String, MediaPlayer> streams = new HashMap<String, MediaPlayer>();
-	public Map<Integer, Boolean> soundLoaded = new HashMap<Integer, Boolean>();
-
-	public boolean loaded = true;
 
 	public SoundManager(Context appContext) {
 		this.appContext = appContext;
