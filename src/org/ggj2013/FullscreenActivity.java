@@ -18,6 +18,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	public Movement lastActivity;
 
 	private long lastActivityTimestamp;
+	private long lastInactivityTimestamp;
 
 	/**
 	 * 0 = North, 180 = South
@@ -137,20 +138,26 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	}
 
 	private void onAcceleratorEvent(SensorEvent event) {
-		float LEG_THRSHOLD_AMPLITUDE = 5;
+		float LEG_THRSHOLD_AMPLITUDE = 2;
+		long activityLag = 30;
+		long inactivityLag = 300;
+		long now = System.currentTimeMillis();
 
 		final float z = event.values[2];
 		final float zDiff = Math.abs(z - mLastZ);
 		mLastZ = z;
 
 		if (zDiff > LEG_THRSHOLD_AMPLITUDE) {
-			lastActivityTimestamp = System.currentTimeMillis();
+			lastActivityTimestamp = now;
 
-			if (lastActivity != Movement.MOVING) {
-				lastActivity = Movement.MOVING;
+			if (lastInactivityTimestamp + activityLag < now) {
+				if (lastActivity != Movement.MOVING) {
+					lastActivity = Movement.MOVING;
+				}
 			}
 		} else {
-			if (lastActivityTimestamp + 500 < System.currentTimeMillis()) {
+			lastInactivityTimestamp = now;
+			if (lastActivityTimestamp + inactivityLag < now) {
 				if (lastActivity != Movement.NONE) {
 					lastActivity = Movement.NONE;
 				}
