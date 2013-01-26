@@ -7,7 +7,7 @@ public class Entity {
 	public Vector3D position = Vector3D.ZERO;
 	public static final Vector3D FORWARD = Vector3D.PLUS_J;
 	public static final Vector3D UP = Vector3D.PLUS_K;
-	public float size = 1;
+	public float size = 0.5f;
 
 	/**
 	 * Orientation of entity in Radians.
