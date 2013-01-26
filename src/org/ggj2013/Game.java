@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -22,11 +21,20 @@ public class Game {
 	public Rect settingsBounds;
 	public Rect resetBounds;
 
+	private Path arrow;
+
+	private Paint red;
+	private Paint white;
+	private Paint black;
+	private Paint yellow;
+	private Paint green;
+
 	public Game(FullscreenActivity activity) {
 		this.activity = activity;
 		soundManager = new SoundManager(activity.getApplicationContext());
 		soundManager.loadSoundPack(new SoundPackStandard());
 		restart();
+
 	}
 
 	public void restart() {
@@ -78,44 +86,29 @@ public class Game {
 		int h = c.getHeight();
 		float textsize = 64 * w / 1000;
 
+		if (red == null)
+			red = createPaint(Color.RED, textsize);
+		if (white == null)
+			white = createPaint(Color.WHITE, textsize * 2);
+		if (black == null)
+			black = createPaint(Color.BLACK, textsize);
+		if (yellow == null)
+			yellow = createPaint(Color.YELLOW, textsize);
+		if (green == null)
+			green = createPaint(Color.GREEN, textsize);
+
 		int centerX = c.getClipBounds().centerX();
 		int centerY = c.getClipBounds().centerY();
-
-		Paint bg = new Paint();
-		bg.setColor(Color.RED);
-		bg.setTextSize(textsize * 2);
-		bg.setStyle(Style.FILL);
-		bg.setAntiAlias(true);
-		bg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-
-		Paint ar = new Paint();
-		ar.setColor(Color.WHITE);
-		ar.setAntiAlias(true);
-
-		Paint cp = new Paint();
-		cp.setColor(Color.BLACK);
-		cp.setTextSize(textsize);
-		cp.setStyle(Style.FILL);
-		cp.setAntiAlias(true);
-		cp.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-
-		Paint fg = new Paint();
-		fg.setColor(Color.WHITE);
-		fg.setTextSize(textsize);
-		fg.setStyle(Style.FILL);
-		fg.setAntiAlias(true);
-		fg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-		fg.setTextAlign(Align.CENTER);
 
 		c.save();
 
 		// bg
-		c.drawRect(c.getClipBounds(), bg);
+		c.drawRect(c.getClipBounds(), black);
 
 		// debug
 		c.drawText(String.format("x: %.2f / y: %.2f",
 				currentRoom.player.position.getX(),
-				currentRoom.player.position.getY()), centerX, 80, fg);
+				currentRoom.player.position.getY()), centerX, 80, green);
 
 		// settings
 		int left = w - (h / 10);
@@ -123,39 +116,77 @@ public class Game {
 		int right = w - 10;
 		int bottom = h - 10;
 		settingsBounds = new Rect(left, top, right, bottom);
-		c.drawRect(settingsBounds, fg);
-		c.drawText("S", left + textsize / 2, top + textsize * 2, bg);
+		c.drawRect(settingsBounds, red);
+		c.drawText("S", left + textsize / 2, top + textsize * 2, white);
 
 		left = 10;
 		right = left + settingsBounds.width();
 		resetBounds = new Rect(left, top, right, bottom);
-		c.drawRect(resetBounds, fg);
-		c.drawText("R", left + textsize / 2, top + textsize * 2, bg);
+		c.drawRect(resetBounds, red);
+		c.drawText("R", left + textsize / 2, top + textsize * 2, white);
 
 		if (currentRoom != null) {
 			// compass
 			c.translate(centerX, centerY);
 			c.rotate(-currentRoom.player.orientation);
-			c.drawCircle(0, 0, (w / 2) - 20, cp);
-			c.drawCircle(0, 0, (w / 2) - 30, bg);
-			c.drawText("N", 0, -(w / 2) + 20, cp);
+			c.drawCircle(0, 0, (w / 2) - 20, white);
+			c.drawCircle(0, 0, (w / 2) - 30, black);
+			c.drawText("N", 0, -(w / 2) + 20, white);
 
 			// direction
-			Path arrow = new Path();
-			arrow.moveTo(0, 10);
-			arrow.lineTo(-20, 30);
-			arrow.lineTo(0, -30);
-			arrow.lineTo(20, 30);
-			arrow.close();
+			if (arrow == null) {
+				arrow = new Path();
+				arrow.moveTo(0, 10);
+				arrow.lineTo(-20, 30);
+				arrow.lineTo(0, -30);
+				arrow.lineTo(20, 30);
+				arrow.close();
+			}
 
 			c.restore();
+			c.save();
 			c.translate(centerX, centerY);
 			c.rotate(90f - (float) Math.toDegrees(currentRoom.player
 					.relativeOrientationFor(currentRoom.damsel).getAlpha()));
 			c.scale(5, 5);
-			c.drawPath(arrow, ar);
+			c.drawPath(arrow, red);
+			c.restore();
+			c.save();
+			c.drawText(
+					String.format("%.1f",
+							currentRoom.player.distanceTo(currentRoom.damsel)),
+					centerX - textsize, centerY - textsize, black);
+
+			// enemies
+			for (int i = 0; i < currentRoom.enemies.size(); i++) {
+				Enemy e = currentRoom.enemies.get(i);
+				c.restore();
+				c.save();
+				float x = centerX
+						+ ((w / 5) * (i - currentRoom.enemies.size() + 2));
+				float y = centerY - (w / 5);
+				c.translate(x, y);
+				c.rotate(90f - (float) Math.toDegrees(currentRoom.player
+						.relativeOrientationFor(e).getAlpha()));
+				c.drawPath(arrow, yellow);
+				c.restore();
+				c.save();
+				c.drawText(
+						String.format("%.1f", currentRoom.player.distanceTo(e)),
+						x - textsize, y - textsize, yellow);
+			}
 
 			currentRoom.onRender(c);
 		}
+	}
+
+	private Paint createPaint(int color, float textsize) {
+		Paint p = new Paint();
+		p.setColor(color);
+		p.setTextSize(textsize);
+		p.setStyle(Style.FILL);
+		// p.setAntiAlias(true);
+		p.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+		return p;
 	}
 }
