@@ -2,13 +2,14 @@ package org.ggj2013;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-	private final MainThread thread;
+	private MainThread thread;
 
 	public GameView(Context context) {
 		super(context);
@@ -27,6 +28,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+		if (thread.getState() == Thread.State.TERMINATED) {
+			thread = new MainThread(getHolder(), this);
+		}
+
 		thread.setRunning(true);
 		thread.start();
 	}
@@ -34,12 +39,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		boolean retry = true;
+
 		while (retry) {
 			try {
+				thread.setRunning(false);
 				thread.join();
 				retry = false;
 			} catch (InterruptedException e) {
-				// try again shutting down the thread
+				Log.e("GameView", "surface destruction failed", e);
 			}
 		}
 	}
