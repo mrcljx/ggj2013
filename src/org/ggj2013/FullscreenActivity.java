@@ -49,6 +49,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 		soundManager = new SoundManager(getApplicationContext());
 		soundManager.loadSoundPack(new SoundPackStandard());
+
 	}
 
 	@Override
@@ -137,11 +138,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 			if (mLastActivity != Movement.MOVING) {
 				mLastActivity = Movement.MOVING;
 
-				soundManager
-						.play(SoundPackStandard.CAT_MEOW,
-								SoundManager.BALANCE_FULL_LEFT,
-								SoundManager.VOLUME_100);
-
 				Log.e("MOVING", "WALKING");
 			}
 		} else {
@@ -150,6 +146,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 					mLastActivity = Movement.NONE;
 					Log.e("MOVEMENT", "STOPPED");
 					mInactivityCount = 0;
+
 				}
 			} else if (mLastActivity != Movement.NONE) {
 				mInactivityCount++;
