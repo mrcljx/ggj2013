@@ -8,7 +8,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.Window;
 
 public class FullscreenActivity extends Activity implements SensorEventListener {
@@ -105,16 +104,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				SensorManager.getOrientation(inR, orientVals);
 				float azimuth = orientVals[0] * rad2deg;
 				float orientation = azimuth;
-				// float orientation = Math.round(azimuth / 10f) * 10;
-
-				// float diff = orientation - dLastOrientation;
-				// diff = (diff + 180 + 360) % 360 - 180;
-				// diff = Math.abs(diff);
-
-				// if (diff > 10) {
 				dLastOrientation = lowPass(orientation, dLastOrientation);
-				Log.d("COMPASS", Float.toString(dLastOrientation));
-				// }
 			}
 		}
 	}
@@ -161,14 +151,11 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 			if (lastActivity != Movement.MOVING) {
 				lastActivity = Movement.MOVING;
-
-				Log.e("MOVING", "WALKING");
 			}
 		} else {
 			if (lastActivityTimestamp + 500 < System.currentTimeMillis()) {
 				if (lastActivity != Movement.NONE) {
 					lastActivity = Movement.NONE;
-					Log.e("MOVEMENT", "STOPPED");
 				}
 			}
 		}
