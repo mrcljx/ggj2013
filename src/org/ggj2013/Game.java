@@ -148,7 +148,6 @@ public class Game {
 			// enemies
 			for (int i = 0; i < currentRoom.enemies.size(); i++) {
 				Enemy e = currentRoom.enemies.get(i);
-
 				if (debug) {
 					c.restore();
 					c.save();
@@ -206,7 +205,7 @@ public class Game {
 
 	private void paintGlow(Canvas c, Entity e, float centerX, float centerY,
 			float w, float h, int minDistance, Paint inner, Paint outer) {
-		float distance = (float) currentRoom.player.distanceTo(e);
+		float distance = currentRoom.player.distanceTo(e);
 		if (distance < minDistance) {
 			Vector3D v = currentRoom.player.relativeOrientationFor(e);
 			double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(centerX,

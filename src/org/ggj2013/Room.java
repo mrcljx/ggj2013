@@ -27,6 +27,9 @@ public class Room {
 		this.context = context;
 
 		player = new Player("player");
+		context.soundManager.play(player.name, SoundPackStandard.BEAT,
+				SoundManager.BALANCE_CENTER, 1f, -1);
+
 		damsel = new Damsel("damsel");
 		damsel.position = player.position.add(new Vector3D(0, 10, 0));
 		enemies = new LinkedList<Enemy>();
@@ -50,8 +53,9 @@ public class Room {
 		if (!startedSound) {
 			startedSound = true;
 
-			context.soundManager.play(damsel.name, SoundPackStandard.BEAT,
-					SoundManager.BALANCE_CENTER, 1f, -1);
+			context.soundManager.play(damsel.name, SoundPackStandard.GOAL,
+					SoundManager.BALANCE_CENTER, 1f,
+					SoundManager.LOOPS_INFINITE);
 
 			for (Enemy e : enemies) {
 				context.soundManager.play(e.name, e.getSoundName(),
