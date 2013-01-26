@@ -15,7 +15,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private float mLastZ;
 
-	private Movement lastActivity;
+	public Movement lastActivity;
 
 	private long lastActivityTimestamp;
 

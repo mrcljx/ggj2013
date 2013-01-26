@@ -4,7 +4,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class Entity {
 	public Vector3D position = Vector3D.ZERO;
-	public double size = 0;
+	public double size = 1;
 
 	/**
 	 * Orientation of entity in Radians.

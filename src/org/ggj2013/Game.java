@@ -34,7 +34,7 @@ public class Game {
 			currentRoom = null;
 			Log.e("GAME", "WON!");
 		} else {
-			currentRoom = new Room();
+			currentRoom = new Room(activity);
 		}
 	}
 
@@ -43,11 +43,14 @@ public class Game {
 
 		if (lastUpdate > 0) {
 			timeDiff = now - lastUpdate;
-			lastUpdate = now;
 		}
 
+		lastUpdate = now;
+
 		if (currentRoom != null) {
-			currentRoom.onUpdate(timeDiff);
+			float timeElapsed = timeDiff / 1000000000f;
+			// Log.d("DELTA", Float.toString(timeElapsed));
+			currentRoom.onUpdate(timeElapsed);
 		}
 	}
 
