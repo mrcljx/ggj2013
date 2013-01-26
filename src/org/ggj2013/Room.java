@@ -38,7 +38,7 @@ public class Room {
 		if (soundManager.loaded && !startedSound) {
 			startedSound = true;
 
-			soundManager.play("damsel", SoundPackStandard.CAT_MEOW,
+			soundManager.play("damsel", SoundPackStandard.BEAT,
 					SoundManager.BALANCE_CENTER, 1f, -1);
 		}
 	}

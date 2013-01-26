@@ -13,8 +13,8 @@ public class Player extends Entity {
 
 		float[] balance = new float[2];
 
-		balance[0] = 0.5f + (float) normalized.getX() * 0.5f;
-		balance[1] = 0.5f - (float) normalized.getX() * 0.5f;
+		balance[0] = 0.5f - (float) normalized.getX() * 0.5f;
+		balance[1] = 0.5f + (float) normalized.getX() * 0.5f;
 
 		float distance = (float) distanceTo(e);
 		float distanceVolume = 1;
