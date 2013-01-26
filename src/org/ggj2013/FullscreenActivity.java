@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.view.WindowManager;
 
 public class FullscreenActivity extends Activity implements
 		SensorEventListener, OnTouchListener {
@@ -56,8 +57,8 @@ public class FullscreenActivity extends Activity implements
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		gameView = new GameView(this);
 		gameView.setOnTouchListener(this);
 		setContentView(gameView);
