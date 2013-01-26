@@ -21,7 +21,11 @@ public class SoundManager {
 	public static final float VOLUME_100 = 1f;
 	public static final float VOLUME_50 = 0.5f;
 
+	public static final int LOOPS_0 = 0;
+	public static final int LOOPS_INFINITE = -1;
+
 	public Map<String, Integer> sounds = new HashMap<String, Integer>();
+	public Map<String, Integer> streams = new HashMap<String, Integer>();
 
 	public SoundManager(Context appContext) {
 		sndPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 100);
@@ -32,9 +36,12 @@ public class SoundManager {
 		return sndPool.load(pContext, sound_id, 1);
 	}
 
-	public void play(String soundKey, float[] balance, float masterVolume) {
-		sndPool.play(sounds.get(soundKey), masterVolume * balance[0],
-				masterVolume * balance[1], 1, 0, rate);
+	public void play(String ident, String soundKey, float[] balance,
+			float masterVolume, int loops) {
+		int streamId = sndPool.play(sounds.get(soundKey), masterVolume
+				* balance[0], masterVolume * balance[1], 1, loops, rate);
+
+		streams.put(ident, streamId);
 	}
 
 	public void loadSoundPack(SoundPack soundPack) {
@@ -44,4 +51,22 @@ public class SoundManager {
 			sounds.put(sound.getKey(), this.load(sound.getValue()));
 		}
 	}
+
+	public void changeVolume(String streamIdent, float[] balance,
+			float masterVolume) {
+
+		sndPool.setVolume(streams.get(streamIdent), masterVolume * balance[0],
+				masterVolume * balance[1]);
+	}
+
+	// Sample calls
+	/*
+	 * soundManager.changeVolume("CatBackground",
+	 * SoundManager.BALANCE_FULL_LEFT, 0.1f);
+	 * 
+	 * soundManager.play("CatBackground", SoundPackStandard.CAT_MEOW,
+	 * SoundManager.BALANCE_FULL_LEFT, SoundManager.VOLUME_100,
+	 * SoundManager.LOOPS_0);
+	 */
+
 }

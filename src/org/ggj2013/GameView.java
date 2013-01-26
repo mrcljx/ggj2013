@@ -1,6 +1,5 @@
 package org.ggj2013;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -10,13 +9,15 @@ import android.view.SurfaceView;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	private MainThread thread;
+	private final FullscreenActivity context;
 
-	public GameView(Context context) {
+	public GameView(FullscreenActivity context) {
 		super(context);
 		getHolder().addCallback(this);
+		this.context = context;
 
 		// create the game loop thread
-		thread = new MainThread(getHolder(), this);
+		thread = new MainThread(context, getHolder(), this);
 
 		setFocusable(true);
 	}
@@ -29,7 +30,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		if (thread.getState() == Thread.State.TERMINATED) {
-			thread = new MainThread(getHolder(), this);
+			thread = new MainThread(context, getHolder(), this);
 		}
 
 		thread.setRunning(true);
