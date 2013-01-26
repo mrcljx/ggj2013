@@ -20,11 +20,11 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private float mLastZ;
 
-	private Movement mLastActivity;
+	private Movement lastActivity;
 
 	private long mLastTimestamp;
 
-	private int mInactivityCount;
+	private long lastActivityTimestamp;
 
 	/**
 	 * 0 = North, 180 = South
@@ -149,15 +149,13 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		float factor = (now - mLastTimestamp) / 10000000f;
 		float LEG_THRSHOLD_AMPLITUDE = 5 / factor;
 
-		int LEG_THRSHOLD_INACTIVITY = 5;
-
 		final float z = event.values[2];
 
 		if (Math.abs(z - mLastZ) > LEG_THRSHOLD_AMPLITUDE) {
-			mInactivityCount = 0;
+			lastActivityTimestamp = System.currentTimeMillis();
 
-			if (mLastActivity != Movement.MOVING) {
-				mLastActivity = Movement.MOVING;
+			if (lastActivity != Movement.MOVING) {
+				lastActivity = Movement.MOVING;
 
 				soundManager
 						.play(SoundPackStandard.CAT_MEOW,
@@ -167,14 +165,11 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				Log.e("MOVING", "WALKING");
 			}
 		} else {
-			if (mInactivityCount > LEG_THRSHOLD_INACTIVITY) {
-				if (mLastActivity != Movement.NONE) {
-					mLastActivity = Movement.NONE;
+			if (lastActivityTimestamp + 500 < System.currentTimeMillis()) {
+				if (lastActivity != Movement.NONE) {
+					lastActivity = Movement.NONE;
 					Log.e("MOVEMENT", "STOPPED");
-					mInactivityCount = 0;
 				}
-			} else if (mLastActivity != Movement.NONE) {
-				mInactivityCount++;
 			}
 		}
 		mLastZ = z;
