@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -11,9 +12,13 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 
-public class FullscreenActivity extends Activity implements SensorEventListener {
+public class FullscreenActivity extends Activity implements
+		SensorEventListener, OnTouchListener {
 
 	private float mLastZ;
 
@@ -26,6 +31,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	 * 0 = North, 180 = South
 	 */
 	float lastOrientation = -1;
+
+	float orientationOffset = 0;
 
 	private SensorManager sensorManager;
 
@@ -46,8 +53,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		gameView = new GameView(this);
+		gameView.setOnTouchListener(this);
 		setContentView(gameView);
-
 	}
 
 	@Override
@@ -109,8 +116,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 			if (success) {
 				SensorManager.getOrientation(inR, orientVals);
-				float azimuth = orientVals[0] * rad2deg;
-				float orientation = azimuth;
+				float orientation = (orientVals[0] * rad2deg);
 				lastOrientation = lowPass(orientation, lastOrientation);
 			}
 		}
@@ -189,5 +195,24 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		long[] pattern = { 0, dot, gap, dot, gap };
 
 		v.vibrate(pattern, -1);
+	}
+
+	public Rect settingsBounds;
+	public Rect resetBounds;
+
+	public Game game;
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		if (settingsBounds.contains((int) event.getRawX(),
+				(int) event.getRawY())) {
+			orientationOffset = lastOrientation;
+		}
+
+		if (resetBounds.contains((int) event.getRawX(), (int) event.getRawY())) {
+			game.restart();
+		}
+
+		return true;
 	}
 }
