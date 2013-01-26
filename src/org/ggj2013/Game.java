@@ -14,17 +14,29 @@ public class Game {
 	private long lastUpdate = -1;
 	private Room currentRoom;
 	private int currentLevel;
-	private final FullscreenActivity activity;
+	public final FullscreenActivity activity;
+	public SoundManager soundManager;
 
 	public Game(FullscreenActivity activity) {
 		this.activity = activity;
+		soundManager = new SoundManager(activity.getApplicationContext());
+		soundManager.loadSoundPack(new SoundPackStandard());
 		restart();
 	}
 
 	public void restart() {
 		currentRoom = null;
 		currentLevel = 0;
+		soundManager.stopAll();
 		onNextLevel();
+	}
+
+	public void onPause() {
+		soundManager.autoPause();
+	}
+
+	public void onResume() {
+		soundManager.autoResume();
 	}
 
 	public void onNextLevel() {
@@ -34,7 +46,7 @@ public class Game {
 			currentRoom = null;
 			Log.e("GAME", "WON!");
 		} else {
-			currentRoom = new Room(activity);
+			currentRoom = new Room(this);
 		}
 	}
 

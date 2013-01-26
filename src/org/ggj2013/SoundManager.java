@@ -39,6 +39,13 @@ public class SoundManager {
 					int status) {
 				soundLoaded.put(sampleId, (status == 0 ? true : false));
 
+				if (status != 0) {
+					Log.e("SoundManager",
+							"Failed to load sound "
+									+ Integer.toString(sampleId) + " with "
+									+ Integer.toString(status));
+				}
+
 				if (soundLoaded.size() == sounds.size()) {
 					loaded = true;
 				}
@@ -79,6 +86,41 @@ public class SoundManager {
 
 		sndPool.setVolume(streams.get(streamIdent), masterVolume * balance[0],
 				masterVolume * balance[1]);
+	}
+
+	public void stopAll() {
+		for (String id : streams.keySet()) {
+			Integer streamId = streams.get(id);
+			sndPool.stop(streamId);
+		}
+
+		streams.clear();
+	}
+
+	public void unloadAll() {
+		stopAll();
+
+		for (String id : sounds.keySet()) {
+			Integer soundId = sounds.get(id);
+			sndPool.unload(soundId);
+		}
+
+		soundLoaded.clear();
+		sounds.clear();
+	}
+
+	public void release() {
+		stopAll();
+		unloadAll();
+		sndPool.release();
+	}
+
+	public void autoPause() {
+		sndPool.autoPause();
+	}
+
+	public void autoResume() {
+		sndPool.autoResume();
 	}
 
 	// Sample calls
