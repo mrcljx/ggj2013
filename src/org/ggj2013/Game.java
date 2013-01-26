@@ -2,8 +2,10 @@ package org.ggj2013;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.Typeface;
 import android.util.Log;
 
@@ -48,6 +50,8 @@ public class Game {
 	}
 
 	public void onRender(Canvas c) {
+		c.setMatrix(new Matrix());
+
 		Paint bg = new Paint();
 		bg.setColor(Color.RED);
 		c.drawRect(c.getClipBounds(), bg);
@@ -59,6 +63,22 @@ public class Game {
 		fg.setAntiAlias(true);
 		fg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 		c.drawText("Hello", 50, 50, fg);
+
+		int centerX = c.getClipBounds().centerX();
+		int centerY = c.getClipBounds().centerY();
+
+		Path arrow = new Path();
+		arrow.moveTo(0, 10);
+		arrow.lineTo(-20, 30);
+		arrow.lineTo(0, -30);
+		arrow.lineTo(20, 30);
+		arrow.close();
+
+		c.translate(centerX, centerY);
+		c.rotate(10);
+		c.scale(5, 5);
+		c.drawPath(arrow, fg);
+		// c.drawRect(new Rect(centerX - 30, centerY - 30, 200, 280), fg);
 
 		if (currentRoom != null) {
 			currentRoom.onRender(c);
