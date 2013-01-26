@@ -2,18 +2,15 @@ package org.ggj2013;
 
 import org.ggj2013.util.SystemUiHider;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.View;
+import android.view.Window;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -22,22 +19,6 @@ import android.view.View;
  * @see SystemUiHider
  */
 public class FullscreenActivity extends Activity implements SensorEventListener {
-
-	/**
-	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
-	 * will show the system UI visibility upon interaction.
-	 */
-	private static final boolean TOGGLE_ON_CLICK = true;
-
-	/**
-	 * The flags to pass to {@link SystemUiHider#getInstance}.
-	 */
-	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
-
-	/**
-	 * The instance of the {@link SystemUiHider} for this activity.
-	 */
-	private SystemUiHider mSystemUiHider;
 
 	private float mLastZ;
 
@@ -60,68 +41,25 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private float[] magneticField;
 
+	private Game game;
+
+	SoundManager soundManager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		setContentView(R.layout.activity_fullscreen);
 
-		final View controlsView = findViewById(R.id.fullscreen_content_controls);
-		final View contentView = findViewById(R.id.fullscreen_content);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(new GameView(this));
 
-		// Set up an instance of SystemUiHider to control the system UI for
-		// this activity.
-		mSystemUiHider = SystemUiHider.getInstance(this, contentView,
-				HIDER_FLAGS);
-		mSystemUiHider.setup();
-		mSystemUiHider
-				.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
-					// Cached values.
-					int mControlsHeight;
-					int mShortAnimTime;
+		game = new Game();
 
-					@Override
-					@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-					public void onVisibilityChange(boolean visible) {
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-							// If the ViewPropertyAnimator API is available
-							// (Honeycomb MR2 and later), use it to animate the
-							// in-layout UI controls at the bottom of the
-							// screen.
-							if (mControlsHeight == 0) {
-								mControlsHeight = controlsView.getHeight();
-							}
-							if (mShortAnimTime == 0) {
-								mShortAnimTime = getResources().getInteger(
-										android.R.integer.config_shortAnimTime);
-							}
-							controlsView
-									.animate()
-									.translationY(visible ? 0 : mControlsHeight)
-									.setDuration(mShortAnimTime);
-						} else {
-							// If the ViewPropertyAnimator APIs aren't
-							// available, simply show or hide the in-layout UI
-							// controls.
-							controlsView.setVisibility(visible ? View.VISIBLE
-									: View.GONE);
-						}
-					}
-				});
-
-		// Set up the user interaction to manually show or hide the system UI.
-		contentView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (TOGGLE_ON_CLICK) {
-					mSystemUiHider.toggle();
-				} else {
-					mSystemUiHider.show();
-				}
-			}
-		});
-
+		soundManager = new SoundManager(getApplicationContext());
+		soundManager.loadSoundPack(new SoundPackStandard());
 	}
 
 	@Override
@@ -144,16 +82,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				sensorManager.getDefaultSensor((Sensor.TYPE_ACCELEROMETER)));
 		sensorManager.unregisterListener(this,
 				sensorManager.getDefaultSensor((Sensor.TYPE_MAGNETIC_FIELD)));
-	}
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-
-		// Trigger the initial hide() shortly after the activity has been
-		// created, to briefly hint to the user that UI controls
-		// are available.
-		delayedHide(100);
 	}
 
 	@Override
@@ -222,6 +150,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		long now = event.timestamp;
 		float factor = (now - mLastTimestamp) / 10000000f;
 		float LEG_THRSHOLD_AMPLITUDE = 5 / factor;
+
 		int LEG_THRSHOLD_INACTIVITY = 5;
 
 		final float z = event.values[2];
@@ -231,6 +160,12 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 			if (mLastActivity != Movement.MOVING) {
 				mLastActivity = Movement.MOVING;
+
+				soundManager
+						.play(SoundPackStandard.CAT_MEOW,
+								SoundManager.BALANCE_FULL_LEFT,
+								SoundManager.VOLUME_100);
+
 				Log.e("MOVING", "WALKING");
 			}
 		} else {
@@ -246,22 +181,5 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		}
 		mLastZ = z;
 		mLastTimestamp = now;
-	}
-
-	Handler mHideHandler = new Handler();
-	Runnable mHideRunnable = new Runnable() {
-		@Override
-		public void run() {
-			mSystemUiHider.hide();
-		}
-	};
-
-	/**
-	 * Schedules a call to hide() in [delay] milliseconds, canceling any
-	 * previously scheduled calls.
-	 */
-	private void delayedHide(int delayMillis) {
-		mHideHandler.removeCallbacks(mHideRunnable);
-		mHideHandler.postDelayed(mHideRunnable, delayMillis);
 	}
 }
