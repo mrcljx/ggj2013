@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">hearty</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="dummy_content">DUMMY\nCONTENTSSS</string>
     <string name="dummy_button">Dummy Button</string>
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>
