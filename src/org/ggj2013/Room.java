@@ -7,6 +7,7 @@ import org.ggj2013.Enemy.Size;
 import org.ggj2013.FullscreenActivity.Movement;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Room {
@@ -53,7 +54,8 @@ public class Room {
 
 			for (Enemy e : enemies) {
 				context.soundManager.play(e.name, e.getSoundName(),
-						SoundManager.BALANCE_CENTER, 1f, -1);
+						SoundManager.BALANCE_CENTER, 1f,
+						SoundManager.LOOPS_INFINITE);
 			}
 		}
 	}
@@ -68,6 +70,15 @@ public class Room {
 		if (player.collidesWith(damsel)) {
 			this.status = Status.WON;
 			onWonGame();
+		} else if (player.hitsWall(new Vector3D(-10, 10, 0), // topLeft
+				new Vector3D(10, 10, 0), // topRight
+				new Vector3D(-10, -10, 0), // bottomLeft
+				new Vector3D(10, -10, 0) // bottomRight
+				)) {
+			Log.d("Collision", "Hits wall");
+			player.moveForward((timeDiff * -1) * 2);
+			this.context.activity.vibrate();
+			return;
 		} else {
 			for (Entity e : enemies) {
 				if (player.collidesWith(e)) {

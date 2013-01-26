@@ -55,4 +55,23 @@ public class Player extends Entity {
 		Vector3D toOther = vectorTo(e);
 		return lookToOrigin.applyTo(toOther.normalize());
 	}
+
+	public boolean hitsWall(Vector3D wallTopLeft, Vector3D wallTopRight,
+			Vector3D wallBottomLeft, Vector3D wallBottomRight) {
+
+		if (wallTopLeft.getX() < this.position.getX() - this.size
+				&& wallBottomLeft.getX() < this.position.getX() - this.size
+				&& wallTopLeft.getY() > this.position.getY() + this.size
+				&& wallBottomLeft.getY() < this.position.getY() - this.size
+
+				&& wallTopRight.getX() > this.position.getX() + this.size
+				&& wallBottomRight.getX() > this.position.getX() + this.size
+				&& wallTopRight.getY() > this.position.getY() + this.size
+				&& wallBottomRight.getY() < this.position.getY() - this.size) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
 }
