@@ -4,14 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
-import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.media.SoundPool.OnLoadCompleteListener;
 import android.util.Log;
 
 public class SoundManager {
-	private final Context pContext;
-	private final SoundPool sndPool;
+	private final Context appContext;
+	private SoundPool sndPool;
 	private final float rate = 1.0f;
 
 	public static final float[] BALANCE_FULL_RIGHT = new float[] { 0.0f, 1.0f };
@@ -27,35 +26,13 @@ public class SoundManager {
 	public static final int LOOPS_INFINITE = -1;
 
 	public Map<String, Integer> sounds = new HashMap<String, Integer>();
-	public Map<String, Integer> streams = new HashMap<String, Integer>();
+	public Map<String, MediaPlayer> streams = new HashMap<String, MediaPlayer>();
 	public Map<Integer, Boolean> soundLoaded = new HashMap<Integer, Boolean>();
-	public boolean loaded = false;
+
+	public boolean loaded = true;
 
 	public SoundManager(Context appContext) {
-		sndPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 100);
-		sndPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-			@Override
-			public void onLoadComplete(SoundPool soundPool, int sampleId,
-					int status) {
-				soundLoaded.put(sampleId, (status == 0 ? true : false));
-
-				if (status != 0) {
-					Log.e("SoundManager",
-							"Failed to load sound "
-									+ Integer.toString(sampleId) + " with "
-									+ Integer.toString(status));
-				}
-
-				if (soundLoaded.size() == sounds.size()) {
-					loaded = true;
-				}
-			}
-		});
-		pContext = appContext;
-	}
-
-	public int load(int sound_id) {
-		return sndPool.load(pContext, sound_id, 1);
+		this.appContext = appContext;
 	}
 
 	public void play(final String ident, final String soundKey,
@@ -63,64 +40,72 @@ public class SoundManager {
 
 		Log.d("SoundManager", "Start playing sound: " + ident);
 
-		int streamId = sndPool.play(sounds.get(soundKey), masterVolume
-				* balance[0], masterVolume * balance[1], 1, loops, rate);
+		MediaPlayer mediaPlayer = MediaPlayer.create(this.appContext,
+				sounds.get(soundKey));
 
-		if (streamId == 0) {
-			throw new RuntimeException("Failed to play sound!");
+		if (loops == SoundManager.LOOPS_INFINITE) {
+			mediaPlayer.setLooping(true);
+		} else {
+			mediaPlayer.setLooping(false);
 		}
 
-		streams.put(ident, streamId);
+		mediaPlayer.setVolume(masterVolume * balance[0], masterVolume
+				* balance[1]);
+		mediaPlayer.start();
+
+		streams.put(ident, mediaPlayer);
 	}
 
 	public void loadSoundPack(SoundPack soundPack) {
 		for (Map.Entry<String, Integer> sound : soundPack.getAllSounds()
 				.entrySet()) {
 
-			sounds.put(sound.getKey(), this.load(sound.getValue()));
+			sounds.put(sound.getKey(), sound.getValue());
 		}
 	}
 
 	public void changeVolume(String streamIdent, float[] balance,
 			float masterVolume) {
 
-		sndPool.setVolume(streams.get(streamIdent), masterVolume * balance[0],
+		streams.get(streamIdent).setVolume(masterVolume * balance[0],
 				masterVolume * balance[1]);
 	}
 
 	public void stopAll() {
-		for (String id : streams.keySet()) {
-			Integer streamId = streams.get(id);
-			sndPool.stop(streamId);
-		}
 
-		streams.clear();
+		// for (String id : streams.keySet()) {
+		// Integer streamId = streams.get(id);
+		// sndPool.stop(streamId);
+		// }
+		//
+		// streams.clear();
+
 	}
 
 	public void unloadAll() {
-		stopAll();
-
-		for (String id : sounds.keySet()) {
-			Integer soundId = sounds.get(id);
-			sndPool.unload(soundId);
-		}
-
-		soundLoaded.clear();
-		sounds.clear();
+		// stopAll();
+		//
+		// for (String id : sounds.keySet()) {
+		// Integer soundId = sounds.get(id);
+		// sndPool.unload(soundId);
+		// }
+		//
+		// soundLoaded.clear();
+		// sounds.clear();
 	}
 
 	public void release() {
-		stopAll();
-		unloadAll();
-		sndPool.release();
+		// stopAll();
+		// unloadAll();
+		// sndPool.release();
 	}
 
 	public void autoPause() {
-		sndPool.autoPause();
+		// sndPool.autoPause();
 	}
 
 	public void autoResume() {
-		sndPool.autoResume();
+		// sndPool.autoResume();
 	}
 
 	// Sample calls
