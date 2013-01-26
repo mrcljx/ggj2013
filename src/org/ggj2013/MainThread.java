@@ -10,7 +10,7 @@ public class MainThread extends Thread {
 	private final SurfaceHolder surfaceHolder;
 	private final GameView view;
 	private boolean running;
-	private final Game game;
+	public final Game game;
 
 	public MainThread(FullscreenActivity activity, SurfaceHolder surfaceHolder,
 			GameView view) {

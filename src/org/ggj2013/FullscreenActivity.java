@@ -33,6 +33,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private float[] magneticField;
 
+	private GameView gameView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,7 +45,9 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setContentView(new GameView(this));
+		gameView = new GameView(this);
+		setContentView(gameView);
+
 	}
 
 	@Override
@@ -56,6 +60,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
 				SensorManager.SENSOR_DELAY_NORMAL);
+
+		gameView.thread.game.onResume();
 	}
 
 	@Override
@@ -66,6 +72,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				sensorManager.getDefaultSensor((Sensor.TYPE_ACCELEROMETER)));
 		sensorManager.unregisterListener(this,
 				sensorManager.getDefaultSensor((Sensor.TYPE_MAGNETIC_FIELD)));
+
+		gameView.thread.game.onPause();
 	}
 
 	@Override
@@ -94,7 +102,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 			float[] I = new float[16];
 			float[] orientVals = new float[3];
 			final float pi = (float) Math.PI;
-			final float rad2deg = 180 / pi;
+			final float rad2deg = 180f / pi;
 
 			boolean success = SensorManager.getRotationMatrix(inR, I, gravity,
 					magneticField);
@@ -119,7 +127,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	 * value basically means more smoothing See:
 	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
 	 */
-	static final float ALPHA = 0.08f;
+	static final float ALPHA = 0.05f;
 
 	protected float lowPass(float input, float output) {
 

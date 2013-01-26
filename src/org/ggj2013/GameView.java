@@ -8,7 +8,7 @@ import android.view.SurfaceView;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-	private MainThread thread;
+	public MainThread thread;
 	private final FullscreenActivity context;
 
 	public GameView(FullscreenActivity context) {

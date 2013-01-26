@@ -4,19 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SoundPackStandard extends SoundPack {
-	public static final String CAT_MEOW = "CAT_MEOW";
-	public static final String EXPLOSION = "EXPLOSION";
 	public static final String BEAT = "BEAT";
 	public static final String BREATH = "BREATH";
+
+	public static final String ENEMY_BIG = "ENEMY_BIG";
+	public static final String ENEMY_MEDIUM = "ENEMY_MEDIUM";
+	public static final String ENEMY_SMALL = "ENEMY_SMALL";
 
 	@Override
 	public Map<String, Integer> getAllSounds() {
 		Map<String, Integer> sounds = new HashMap<String, Integer>();
 
-		sounds.put(SoundPackStandard.CAT_MEOW, R.raw.cat);
-		sounds.put(SoundPackStandard.EXPLOSION, R.raw.explosion);
 		sounds.put(SoundPackStandard.BEAT, R.raw.beat);
 		sounds.put(SoundPackStandard.BREATH, R.raw.breath);
+		sounds.put(SoundPackStandard.ENEMY_BIG, R.raw.enemy_big);
+		sounds.put(SoundPackStandard.ENEMY_MEDIUM, R.raw.enemy_medium);
+		sounds.put(SoundPackStandard.ENEMY_SMALL, R.raw.enemy_small);
 
 		return sounds;
 	}
