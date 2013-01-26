@@ -91,6 +91,7 @@ public class Room {
 		if (player.collidesWith(damsel)) {
 			this.status = Status.WON;
 			onWonGame();
+			return;
 		} else if (player.hitsWall(new Vector3D(-10, 10, 0), // topLeft
 				new Vector3D(10, 10, 0), // topRight
 				new Vector3D(-10, -10, 0), // bottomLeft
@@ -105,7 +106,7 @@ public class Room {
 				if (player.collidesWith(e)) {
 					this.status = Status.LOST;
 					onLostGame(e);
-					break;
+					return;
 				}
 			}
 		}
@@ -129,6 +130,9 @@ public class Room {
 	}
 
 	private void onWonGame() {
+		context.soundManager.stopAll();
+		context.onNextLevel();
+
 		context.activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -139,6 +143,9 @@ public class Room {
 	}
 
 	private void onLostGame(Entity e) {
+		context.soundManager.stopAll();
+		context.restart();
+
 		context.activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {

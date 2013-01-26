@@ -81,12 +81,13 @@ public class SoundManager {
 
 	public void stopAll() {
 
-		// for (String id : streams.keySet()) {
-		// Integer streamId = streams.get(id);
-		// sndPool.stop(streamId);
-		// }
-		//
-		// streams.clear();
+		for (String id : streams.keySet()) {
+			MediaPlayer mp = streams.get(id);
+			mp.release();
+
+		}
+
+		streams.clear();
 
 	}
 
