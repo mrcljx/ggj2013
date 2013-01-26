@@ -30,15 +30,6 @@ public class Game {
 
 	private Path arrow;
 
-	private Paint red;
-	private Paint redinnerglow;
-	private Paint redouterglow;
-	private Paint white;
-	private Paint grey;
-	private Paint black;
-	private Paint yellow;
-	private Paint green;
-
 	public Game(FullscreenActivity activity) {
 		this.activity = activity;
 		soundManager = new SoundManager(activity.getApplicationContext());
@@ -96,28 +87,32 @@ public class Game {
 		int h = c.getHeight();
 		float textsize = 64 * w / 1000;
 
-		if (red == null)
-			red = createPaint(Color.RED, textsize);
-		if (redinnerglow == null) {
-			redinnerglow = createPaint(Color.RED, textsize);
-			BlurMaskFilter bmf = new BlurMaskFilter(100, Blur.INNER);
-			redinnerglow.setMaskFilter(bmf);
+		// float alpha = System.currentTimeMillis() / 1000;
+
+		Paint red = createPaint(Color.RED, textsize);
+		Paint redinnerglow = createPaint(Color.RED, textsize);
+		redinnerglow.setMaskFilter(new BlurMaskFilter(100, Blur.INNER));
+		Paint redouterglow = createPaint(Color.RED, textsize);
+		redouterglow.setMaskFilter(new BlurMaskFilter(100, Blur.OUTER));
+		Paint white = createPaint(Color.WHITE, textsize * 2);
+		Paint grey = createPaint(Color.DKGRAY, textsize * 2);
+		Paint black = createPaint(Color.BLACK, textsize);
+		Paint yellow = createPaint(Color.YELLOW, textsize);
+		Paint green = createPaint(Color.GREEN, textsize);
+		Paint greeninnerglow = createPaint(Color.GREEN, textsize);
+		greeninnerglow.setMaskFilter(new BlurMaskFilter(100, Blur.INNER));
+		Paint greenouterglow = createPaint(Color.GREEN, textsize);
+		greenouterglow.setMaskFilter(new BlurMaskFilter(100, Blur.OUTER));
+		;
+
+		if (arrow == null) {
+			arrow = new Path();
+			arrow.moveTo(0, 10);
+			arrow.lineTo(-20, 30);
+			arrow.lineTo(0, -30);
+			arrow.lineTo(20, 30);
+			arrow.close();
 		}
-		if (redouterglow == null) {
-			redouterglow = createPaint(Color.RED, textsize);
-			BlurMaskFilter bmf = new BlurMaskFilter(100, Blur.OUTER);
-			redouterglow.setMaskFilter(bmf);
-		}
-		if (white == null)
-			white = createPaint(Color.WHITE, textsize * 2);
-		if (grey == null)
-			grey = createPaint(Color.DKGRAY, textsize * 2);
-		if (black == null)
-			black = createPaint(Color.BLACK, textsize);
-		if (yellow == null)
-			yellow = createPaint(Color.YELLOW, textsize);
-		if (green == null)
-			green = createPaint(Color.GREEN, textsize);
 
 		int centerX = c.getClipBounds().centerX();
 		int centerY = c.getClipBounds().centerY();
@@ -153,8 +148,6 @@ public class Game {
 			// enemies
 			for (int i = 0; i < currentRoom.enemies.size(); i++) {
 				Enemy e = currentRoom.enemies.get(i);
-				float distance = currentRoom.player.distanceTo(e);
-
 				if (debug) {
 					c.restore();
 					c.save();
@@ -167,37 +160,18 @@ public class Game {
 					c.drawPath(arrow, yellow);
 					c.restore();
 					c.save();
+					double distance = currentRoom.player.distanceTo(e);
 					c.drawText(String.format("%.1f", distance), x - textsize, y
 							- textsize, yellow);
 				}
 
-				float startAt = 5;
-				if (distance < startAt) {
-					Vector3D v = currentRoom.player.relativeOrientationFor(e);
-					double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(
-							centerX, centerY, v.getX() * 1000 + centerX,
-							v.getY() * 1000 + centerY, 0, 0, w, h);
-					float newX = (float) clip[2] * (1);
-					float newY = h - (float) clip[3];
-					c.restore();
-					c.save();
-					c.translate(newX, newY);
-
-					float inverseDistance = (startAt - distance) / startAt;
-					float scale = MathUtils.lerp(inverseDistance, 0, 1, 1, 3);
-					c.scale(scale, scale);
-
-					int a = Math.round(MathUtils.lerp(inverseDistance, 0, 0.3f,
-							0, 255));
-					Paint p1 = new Paint(redinnerglow);
-					p1.setAlpha(a);
-					c.drawCircle(0, 0, 50, p1);
-
-					Paint p2 = new Paint(redouterglow);
-					p2.setAlpha(a);
-					c.drawCircle(0, 0, 50, p2);
-				}
+				paintGlow(c, e, centerX, centerY, w, h, 5, redinnerglow,
+						redouterglow);
 			}
+
+			// damsel
+			// paintGlow(c, currentRoom.damsel, centerX, centerY, w, h, 10,
+			// greeninnerglow, greenouterglow);
 
 			if (debug) {
 				// compass
@@ -209,15 +183,6 @@ public class Game {
 			}
 
 			// direction
-			if (arrow == null) {
-				arrow = new Path();
-				arrow.moveTo(0, 10);
-				arrow.lineTo(-20, 30);
-				arrow.lineTo(0, -30);
-				arrow.lineTo(20, 30);
-				arrow.close();
-			}
-
 			c.restore();
 			c.save();
 			c.translate(centerX, centerY);
@@ -231,10 +196,30 @@ public class Game {
 				c.save();
 				c.drawText(String.format("%.1f",
 						currentRoom.player.distanceTo(currentRoom.damsel)),
-						centerX - textsize, centerY - textsize, black);
+						centerX - textsize, centerY - textsize, green);
 			}
 
 			currentRoom.onRender(c);
+		}
+	}
+
+	private void paintGlow(Canvas c, Entity e, float centerX, float centerY,
+			float w, float h, int minDistance, Paint inner, Paint outer) {
+		float distance = currentRoom.player.distanceTo(e);
+		if (distance < minDistance) {
+			Vector3D v = currentRoom.player.relativeOrientationFor(e);
+			double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(centerX,
+					centerY, v.getX() * 1000 + centerX, v.getY() * 1000
+							+ centerY, 0, 0, w, h);
+			float newX = (float) clip[2];
+			float newY = h - (float) clip[3];
+			float factor = distance * minDistance;
+			newX = centerX - newX > 0 ? newX - factor : newX + factor;
+			newY = centerY - newY > 0 ? newY - factor : newY + factor;
+			c.restore();
+			c.save();
+			c.drawCircle(newX, newY, 100, inner);
+			c.drawCircle(newX, newY, 100, outer);
 		}
 	}
 
