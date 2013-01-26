@@ -12,11 +12,12 @@ public class MainThread extends Thread {
 	private boolean running;
 	private final Game game;
 
-	public MainThread(SurfaceHolder surfaceHolder, GameView view) {
+	public MainThread(FullscreenActivity activity, SurfaceHolder surfaceHolder,
+			GameView view) {
 		super();
 		this.surfaceHolder = surfaceHolder;
 		this.view = view;
-		this.game = new Game();
+		this.game = new Game(activity);
 	}
 
 	public void setRunning(boolean running) {
