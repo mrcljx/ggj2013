@@ -130,29 +130,29 @@ public class Game {
 		c.drawRect(activity.resetBounds, fg);
 		c.drawText("R", left + textsize / 2, top + textsize * 2, bg);
 
-		// compass
-		c.translate(centerX, centerY);
-		c.rotate(-currentRoom.player.orientation);
-		c.drawCircle(0, 0, (w / 2) - 20, cp);
-		c.drawCircle(0, 0, (w / 2) - 30, bg);
-		c.drawText("N", 0, -(w / 2) + 20, cp);
-
-		// direction
-		Path arrow = new Path();
-		arrow.moveTo(0, 10);
-		arrow.lineTo(-20, 30);
-		arrow.lineTo(0, -30);
-		arrow.lineTo(20, 30);
-		arrow.close();
-
-		c.restore();
-		c.translate(centerX, centerY);
-		c.rotate(90f - (float) Math.toDegrees(currentRoom.player
-				.relativeOrientationFor(currentRoom.damsel).getAlpha()));
-		c.scale(5, 5);
-		c.drawPath(arrow, ar);
-
 		if (currentRoom != null) {
+			// compass
+			c.translate(centerX, centerY);
+			c.rotate(-currentRoom.player.orientation);
+			c.drawCircle(0, 0, (w / 2) - 20, cp);
+			c.drawCircle(0, 0, (w / 2) - 30, bg);
+			c.drawText("N", 0, -(w / 2) + 20, cp);
+
+			// direction
+			Path arrow = new Path();
+			arrow.moveTo(0, 10);
+			arrow.lineTo(-20, 30);
+			arrow.lineTo(0, -30);
+			arrow.lineTo(20, 30);
+			arrow.close();
+
+			c.restore();
+			c.translate(centerX, centerY);
+			c.rotate(90f - (float) Math.toDegrees(currentRoom.player
+					.relativeOrientationFor(currentRoom.damsel).getAlpha()));
+			c.scale(5, 5);
+			c.drawPath(arrow, ar);
+
 			currentRoom.onRender(c);
 		}
 	}
