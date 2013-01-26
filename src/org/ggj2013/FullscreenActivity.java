@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -23,18 +22,6 @@ import android.view.View;
  * @see SystemUiHider
  */
 public class FullscreenActivity extends Activity implements SensorEventListener {
-
-	/**
-	 * Whether or not the system UI should be auto-hidden after
-	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-	 */
-	private static final boolean AUTO_HIDE = true;
-
-	/**
-	 * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-	 * user interaction before hiding the system UI.
-	 */
-	private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
 	/**
 	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
@@ -56,7 +43,16 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private Movement mLastActivity;
 
+	private long mLastTimestamp;
+
 	private int mInactivityCount;
+
+	/**
+	 * 0 = North, 180 = South
+	 */
+	private int dLastOrientation = -1;
+
+	private long dLastTimestamp;
 
 	private SensorManager sensorManager;
 
@@ -111,11 +107,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 							controlsView.setVisibility(visible ? View.VISIBLE
 									: View.GONE);
 						}
-
-						if (visible && AUTO_HIDE) {
-							// Schedule a hide().
-							delayedHide(AUTO_HIDE_DELAY_MILLIS);
-						}
 					}
 				});
 
@@ -131,11 +122,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 			}
 		});
 
-		// Upon interacting with UI controls, delay any scheduled hide()
-		// operations to prevent the jarring behavior of controls going away
-		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(
-				mDelayHideTouchListener);
 	}
 
 	@Override
@@ -172,7 +158,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
 	}
 
 	@Override
@@ -191,6 +176,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private void onCompassEvent(SensorEvent event) {
 		this.magneticField = event.values.clone();
+		long now = event.timestamp;
 
 		if (gravity != null && magneticField != null) {
 			float[] inR = new float[16];
@@ -207,13 +193,25 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				float azimuth = orientVals[0] * rad2deg;
 				int orientation = Math.round(azimuth / 10f) * 10;
 
-				if (orientation == -180) {
-					orientation = 180;
+				// 0-350°
+				orientation = (orientation + 180);
+				if (orientation == 360) {
+					orientation = 0;
 				}
 
-				Log.e("COMPASS", Integer.toString(orientation));
+				int diff = orientation - dLastOrientation;
+				diff = (diff + 180 + 360) % 360 - 180;
+				diff = Math.abs(diff);
+
+				float factor = (now - dLastTimestamp) / 100000000f;
+
+				if (dLastOrientation < 0 || (diff < (45 * factor)) && diff > 0) {
+					dLastOrientation = orientation;
+					Log.e("COMPASS", Integer.toString(dLastOrientation));
+				}
 			}
 		}
+		dLastTimestamp = now;
 	}
 
 	enum Movement {
@@ -221,8 +219,9 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	}
 
 	private void onAcceleratorEvent(SensorEvent event) {
-		// TODO: Thresholds should be based on time diff (not on samples)
-		float LEG_THRSHOLD_AMPLITUDE = 5;
+		long now = event.timestamp;
+		float factor = (now - mLastTimestamp) / 10000000f;
+		float LEG_THRSHOLD_AMPLITUDE = 5 / factor;
 		int LEG_THRSHOLD_INACTIVITY = 5;
 
 		final float z = event.values[2];
@@ -246,23 +245,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 			}
 		}
 		mLastZ = z;
+		mLastTimestamp = now;
 	}
-
-	/**
-	 * Touch listener to use for in-layout UI controls to delay hiding the
-	 * system UI. This is to prevent the jarring behavior of controls going away
-	 * while interacting with activity UI.
-	 */
-	View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-		@Override
-		public boolean onTouch(View view, MotionEvent motionEvent) {
-			if (AUTO_HIDE) {
-				delayedHide(AUTO_HIDE_DELAY_MILLIS);
-			}
-
-			return false;
-		}
-	};
 
 	Handler mHideHandler = new Handler();
 	Runnable mHideRunnable = new Runnable() {
