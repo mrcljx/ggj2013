@@ -1,7 +1,5 @@
 package org.ggj2013;
 
-import org.ggj2013.util.SystemUiHider;
-
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -9,15 +7,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Window;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- * 
- * @see SystemUiHider
- */
 public class FullscreenActivity extends Activity implements SensorEventListener {
 
 	private float mLastZ;
@@ -161,10 +154,10 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 			if (mLastActivity != Movement.MOVING) {
 				mLastActivity = Movement.MOVING;
 
-				soundManager
-						.play(SoundPackStandard.CAT_MEOW,
-								SoundManager.BALANCE_FULL_LEFT,
-								SoundManager.VOLUME_100);
+				// soundManager
+				// .play(SoundPackStandard.CAT_MEOW,
+				// SoundManager.BALANCE_FULL_LEFT,
+				// SoundManager.VOLUME_100);
 
 				Log.e("MOVING", "WALKING");
 			}
@@ -181,5 +174,15 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		}
 		mLastZ = z;
 		mLastTimestamp = now;
+	}
+
+	public void vibrate() {
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+		int dot = 300;
+		int gap = 2000;
+		long[] pattern = { 0, dot, gap, dot, gap };
+
+		v.vibrate(pattern, -1);
 	}
 }
