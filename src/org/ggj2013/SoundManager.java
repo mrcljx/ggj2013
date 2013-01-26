@@ -36,6 +36,9 @@ public class SoundManager {
 		Log.d("SoundManager", "Start playing sound " + ident + " from "
 				+ soundKey);
 
+		if (streams.get(ident) != null) {
+			streams.get(ident).release();
+		}
 		MediaPlayer mediaPlayer = MediaPlayer.create(this.appContext,
 				sounds.get(soundKey));
 

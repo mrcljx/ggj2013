@@ -10,6 +10,7 @@ public class Player extends Entity {
 	}
 
 	float HEARING_MINIMUM = 3f;
+	int heartbeatLevel = 1;
 
 	public float[] getBalanceForSoundFrom(Entity e) {
 		Vector3D normalized = relativeOrientationFor(e);
@@ -69,6 +70,35 @@ public class Player extends Entity {
 		} else {
 			return true;
 		}
+	}
 
+	public void playHeartBeatSound(SoundManager soundManager) {
+		if (heartbeatLevel == 5) {
+			soundManager.play("player_heartbeat",
+					SoundPackStandard.HEARTBEAT_05,
+					SoundManager.BALANCE_CENTER, 1f,
+					SoundManager.LOOPS_INFINITE);
+
+		} else if (heartbeatLevel == 4) {
+			soundManager.play("player_heartbeat",
+					SoundPackStandard.HEARTBEAT_04,
+					SoundManager.BALANCE_CENTER, 0.7f,
+					SoundManager.LOOPS_INFINITE);
+		} else if (heartbeatLevel == 3) {
+			soundManager.play("player_heartbeat",
+					SoundPackStandard.HEARTBEAT_03,
+					SoundManager.BALANCE_CENTER, 0.5f,
+					SoundManager.LOOPS_INFINITE);
+		} else if (heartbeatLevel == 2) {
+			soundManager.play("player_heartbeat",
+					SoundPackStandard.HEARTBEAT_02,
+					SoundManager.BALANCE_CENTER, 0.3f,
+					SoundManager.LOOPS_INFINITE);
+		} else {
+			soundManager.play("player_heartbeat",
+					SoundPackStandard.HEARTBEAT_01,
+					SoundManager.BALANCE_CENTER, 0.2f,
+					SoundManager.LOOPS_INFINITE);
+		}
 	}
 }

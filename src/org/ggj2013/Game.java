@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class Game {
 
-	boolean debug = false;
+	boolean debug = true;
 
 	private long timeDiff = 2000000; // 2ms
 	private long lastUpdate = -1;

@@ -27,8 +27,6 @@ public class Room {
 		this.context = context;
 
 		player = new Player("player");
-		context.soundManager.play(player.name, SoundPackStandard.BEAT,
-				SoundManager.BALANCE_CENTER, 1f, -1);
 
 		damsel = new Damsel("damsel");
 		damsel.position = player.position.add(new Vector3D(0, 10, 0));
@@ -122,9 +120,34 @@ public class Room {
 			float[] balance = player.getBalanceForSoundFrom(damsel);
 			context.soundManager.changeVolume(damsel.name, balance, 1);
 
+			double minDistance = 10;
+
 			for (Enemy enemy : enemies) {
 				balance = player.getBalanceForSoundFrom(enemy);
 				context.soundManager.changeVolume(enemy.name, balance, 1);
+
+				double distance = player.distanceTo(enemy);
+				if (distance < minDistance) {
+					minDistance = distance;
+				}
+			}
+
+			int newHeartbeatLevel;
+			if (minDistance > 5) {
+				newHeartbeatLevel = 1;
+			} else if (minDistance > 4) {
+				newHeartbeatLevel = 2;
+			} else if (minDistance > 3) {
+				newHeartbeatLevel = 3;
+			} else if (minDistance > 2) {
+				newHeartbeatLevel = 4;
+			} else {
+				newHeartbeatLevel = 5;
+			}
+
+			if (newHeartbeatLevel != player.heartbeatLevel) {
+				player.heartbeatLevel = newHeartbeatLevel;
+				player.playHeartBeatSound(context.soundManager);
 			}
 		}
 	}
