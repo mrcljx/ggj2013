@@ -80,7 +80,7 @@ public class Game {
 		arrow.close();
 
 		c.translate(centerX, centerY);
-		c.rotate(-activity.dLastOrientation);
+		c.rotate(-activity.lastOrientation);
 		c.scale(5, 5);
 		c.drawPath(arrow, fg);
 		// c.drawRect(new Rect(centerX - 30, centerY - 30, 200, 280), fg);

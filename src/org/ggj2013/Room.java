@@ -50,8 +50,8 @@ public class Room {
 
 		if (context.lastActivity == Movement.MOVING) {
 			Vector3D movement = new Vector3D(0, 1, 0);
-			Rotation rotation = new Rotation(Vector3D.PLUS_J,
-					context.dLastOrientation);
+			Rotation rotation = new Rotation(Vector3D.PLUS_K,
+					Math.toRadians(context.lastOrientation));
 			movement = rotation.applyTo(movement);
 			player.position = player.position.add(timeDiff, movement);
 

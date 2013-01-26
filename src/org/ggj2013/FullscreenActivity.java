@@ -21,7 +21,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	/**
 	 * 0 = North, 180 = South
 	 */
-	float dLastOrientation = -1;
+	float lastOrientation = -1;
 
 	private SensorManager sensorManager;
 
@@ -104,7 +104,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				SensorManager.getOrientation(inR, orientVals);
 				float azimuth = orientVals[0] * rad2deg;
 				float orientation = azimuth;
-				dLastOrientation = lowPass(orientation, dLastOrientation);
+				lastOrientation = lowPass(orientation, lastOrientation);
 			}
 		}
 	}
