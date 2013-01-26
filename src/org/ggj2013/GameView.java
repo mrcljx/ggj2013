@@ -8,8 +8,9 @@ import android.view.SurfaceView;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-	public MainThread thread;
+	private MainThread thread;
 	private final FullscreenActivity context;
+	public final Game game;
 
 	public GameView(FullscreenActivity context) {
 		super(context);
@@ -17,7 +18,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		this.context = context;
 
 		// create the game loop thread
-		thread = new MainThread(context, getHolder(), this);
+		this.game = new Game(context);
+		thread = new MainThread(context, getHolder(), this, game);
 
 		setFocusable(true);
 	}
@@ -30,7 +32,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		if (thread.getState() == Thread.State.TERMINATED) {
-			thread = new MainThread(context, getHolder(), this);
+			thread = new MainThread(context, getHolder(), this, game);
 		}
 
 		thread.setRunning(true);

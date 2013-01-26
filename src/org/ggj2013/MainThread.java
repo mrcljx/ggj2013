@@ -13,11 +13,11 @@ public class MainThread extends Thread {
 	public final Game game;
 
 	public MainThread(FullscreenActivity activity, SurfaceHolder surfaceHolder,
-			GameView view) {
+			GameView view, Game game) {
 		super();
 		this.surfaceHolder = surfaceHolder;
 		this.view = view;
-		this.game = new Game(activity);
+		this.game = game;
 	}
 
 	public void setRunning(boolean running) {
