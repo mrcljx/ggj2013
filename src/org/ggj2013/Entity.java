@@ -19,12 +19,12 @@ public class Entity {
 		this.name = name;
 	}
 
-	public double distanceTo(Entity e) {
-		return distanceTo(e.position);
+	public float distanceTo(Entity e) {
+		return distanceTo(e.position) - e.size - size;
 	}
 
-	public double distanceTo(Vector3D v) {
-		return vectorTo(v).getNorm();
+	public float distanceTo(Vector3D v) {
+		return (float) vectorTo(v).getNorm();
 	}
 
 	public Vector3D vectorTo(Entity e) {
@@ -36,7 +36,7 @@ public class Entity {
 	}
 
 	public boolean collidesWith(Entity e) {
-		return distanceTo(e) <= (size + e.size);
+		return distanceTo(e) <= 0;
 	}
 
 	public Vector3D getLookDirection() {

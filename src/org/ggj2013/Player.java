@@ -22,7 +22,7 @@ public class Player extends Entity {
 		float distance = (float) distanceTo(e);
 		float distanceVolume = 1;
 
-		if (distance < HEARING_MINIMUM) {
+		if (distance <= HEARING_MINIMUM) {
 			distanceVolume = 1f;
 		} else {
 			distanceVolume = 1f - ((distance - HEARING_MINIMUM) / (e.volume() - HEARING_MINIMUM));

@@ -153,7 +153,7 @@ public class Game {
 			// enemies
 			for (int i = 0; i < currentRoom.enemies.size(); i++) {
 				Enemy e = currentRoom.enemies.get(i);
-				double distance = currentRoom.player.distanceTo(e);
+				float distance = currentRoom.player.distanceTo(e);
 
 				if (debug) {
 					c.restore();
@@ -171,7 +171,8 @@ public class Game {
 							- textsize, yellow);
 				}
 
-				if (distance < 5) {
+				float startAt = 5;
+				if (distance < startAt) {
 					Vector3D v = currentRoom.player.relativeOrientationFor(e);
 					double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(
 							centerX, centerY, v.getX() * 1000 + centerX,
@@ -180,8 +181,21 @@ public class Game {
 					float newY = h - (float) clip[3];
 					c.restore();
 					c.save();
-					c.drawCircle(newX, newY, 100, redinnerglow);
-					c.drawCircle(newX, newY, 100, redouterglow);
+					c.translate(newX, newY);
+
+					float inverseDistance = (startAt - distance) / startAt;
+					float scale = MathUtils.lerp(inverseDistance, 0, 1, 1, 3);
+					c.scale(scale, scale);
+
+					int a = Math.round(MathUtils.lerp(inverseDistance, 0, 0.3f,
+							0, 255));
+					Paint p1 = new Paint(redinnerglow);
+					p1.setAlpha(a);
+					c.drawCircle(0, 0, 50, p1);
+
+					Paint p2 = new Paint(redouterglow);
+					p2.setAlpha(a);
+					c.drawCircle(0, 0, 50, p2);
 				}
 			}
 

@@ -10,6 +10,12 @@ public class MathUtils {
 		return v;
 	}
 
+	public static float lerp(float v, float fromMin, float fromMax,
+			float toMin, float toMax) {
+		v = (v - fromMin) / (fromMax - fromMin);
+		return toMin + clamp(v, 0, 1) * (toMax - toMin);
+	}
+
 	public static final int INSIDE = 0; // 0000
 	public static final int LEFT = 1; // 0001
 	public static final int RIGHT = 2; // 0010
