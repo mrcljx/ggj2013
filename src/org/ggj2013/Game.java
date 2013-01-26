@@ -19,12 +19,14 @@ public class Game {
 	public final FullscreenActivity activity;
 	public SoundManager soundManager;
 
+	public Rect settingsBounds;
+	public Rect resetBounds;
+
 	public Game(FullscreenActivity activity) {
 		this.activity = activity;
 		soundManager = new SoundManager(activity.getApplicationContext());
 		soundManager.loadSoundPack(new SoundPackStandard());
 		restart();
-		activity.game = this;
 	}
 
 	public void restart() {
@@ -120,14 +122,14 @@ public class Game {
 		int top = h - (h / 10);
 		int right = w - 10;
 		int bottom = h - 10;
-		activity.settingsBounds = new Rect(left, top, right, bottom);
-		c.drawRect(activity.settingsBounds, fg);
+		settingsBounds = new Rect(left, top, right, bottom);
+		c.drawRect(settingsBounds, fg);
 		c.drawText("S", left + textsize / 2, top + textsize * 2, bg);
 
-		left = w - (h / 10) - activity.settingsBounds.width() - 10;
-		right = w - 10 - activity.settingsBounds.width() - 10;
-		activity.resetBounds = new Rect(left, top, right, bottom);
-		c.drawRect(activity.resetBounds, fg);
+		left = 10;
+		right = left + settingsBounds.width();
+		resetBounds = new Rect(left, top, right, bottom);
+		c.drawRect(resetBounds, fg);
 		c.drawText("R", left + textsize / 2, top + textsize * 2, bg);
 
 		if (currentRoom != null) {

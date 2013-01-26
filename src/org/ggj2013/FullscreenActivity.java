@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -74,7 +73,7 @@ public class FullscreenActivity extends Activity implements
 				sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
 				SensorManager.SENSOR_DELAY_NORMAL);
 
-		gameView.thread.game.onResume();
+		gameView.game.onResume();
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public class FullscreenActivity extends Activity implements
 		sensorManager.unregisterListener(this,
 				sensorManager.getDefaultSensor((Sensor.TYPE_MAGNETIC_FIELD)));
 
-		gameView.thread.game.onPause();
+		gameView.game.onPause();
 	}
 
 	@Override
@@ -223,17 +222,14 @@ public class FullscreenActivity extends Activity implements
 		v.vibrate(pattern, -1);
 	}
 
-	public Rect settingsBounds;
-	public Rect resetBounds;
-
-	public Game game;
-
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (settingsBounds.contains((int) event.getX(), (int) event.getY())) {
+		if (gameView.game.settingsBounds.contains((int) event.getX(),
+				(int) event.getY())) {
 			orientationOffset = lastOrientation;
-		} else if (resetBounds.contains((int) event.getX(), (int) event.getY())) {
-			game.restart();
+		} else if (gameView.game.resetBounds.contains((int) event.getX(),
+				(int) event.getY())) {
+			gameView.game.restart();
 		}
 
 		return true;
