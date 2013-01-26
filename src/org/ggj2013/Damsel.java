@@ -6,4 +6,8 @@ public class Damsel extends Entity {
 		super(name);
 	}
 
+	@Override
+	public float volume() {
+		return 15;
+	}
 }
