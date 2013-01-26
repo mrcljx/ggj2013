@@ -13,9 +13,10 @@ public class Entity {
 	 * Orientation of entity in Radians.
 	 */
 	public float orientation;
+	public String name;
 
-	public Entity() {
-
+	public Entity(String name) {
+		this.name = name;
 	}
 
 	public double distanceTo(Entity e) {

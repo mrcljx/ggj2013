@@ -7,6 +7,7 @@ public class SoundPackStandard extends SoundPack {
 	public static final String CAT_MEOW = "CAT_MEOW";
 	public static final String EXPLOSION = "EXPLOSION";
 	public static final String BEAT = "BEAT";
+	public static final String BREATH = "BREATH";
 
 	@Override
 	public Map<String, Integer> getAllSounds() {
@@ -15,6 +16,7 @@ public class SoundPackStandard extends SoundPack {
 		sounds.put(SoundPackStandard.CAT_MEOW, R.raw.cat);
 		sounds.put(SoundPackStandard.EXPLOSION, R.raw.explosion);
 		sounds.put(SoundPackStandard.BEAT, R.raw.beat);
+		sounds.put(SoundPackStandard.BREATH, R.raw.breath);
 
 		return sounds;
 	}

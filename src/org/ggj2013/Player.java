@@ -5,6 +5,10 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class Player extends Entity {
 
+	public Player(String name) {
+		super(name);
+	}
+
 	float HEARING_MINIMUM = 3f;
 	float HEARING_MAXIMUM = 12f;
 

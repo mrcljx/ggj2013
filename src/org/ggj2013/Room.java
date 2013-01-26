@@ -22,11 +22,20 @@ public class Room {
 	private final SoundManager soundManager;
 
 	public Room(FullscreenActivity context) {
-		player = new Player();
-		damsel = new Damsel();
+		this.context = context;
+
+		player = new Player("player");
+		damsel = new Damsel("damsel");
 		damsel.position = player.position.add(new Vector3D(0, 10, 0));
 		enemies = new LinkedList<Enemy>();
-		this.context = context;
+
+		Enemy enemy = new Enemy("enemy-1");
+		enemy.position = new Vector3D(5, 5, 0);
+		enemies.add(enemy);
+
+		enemy = new Enemy("enemy-2");
+		enemy.position = new Vector3D(-3, 8, 0);
+		enemies.add(enemy);
 
 		soundManager = new SoundManager(context.getApplicationContext());
 		soundManager.loadSoundPack(new SoundPackStandard());
@@ -38,8 +47,13 @@ public class Room {
 		if (soundManager.loaded && !startedSound) {
 			startedSound = true;
 
-			soundManager.play("damsel", SoundPackStandard.BEAT,
+			soundManager.play(damsel.name, SoundPackStandard.BEAT,
 					SoundManager.BALANCE_CENTER, 1f, -1);
+
+			for (Enemy e : enemies) {
+				soundManager.play(e.name, SoundPackStandard.BREATH,
+						SoundManager.BALANCE_CENTER, 1f, -1);
+			}
 		}
 	}
 
@@ -71,7 +85,12 @@ public class Room {
 
 		if (startedSound) {
 			float[] balance = player.getBalanceForSoundFrom(damsel);
-			soundManager.changeVolume("damsel", balance, 1);
+			soundManager.changeVolume(damsel.name, balance, 1);
+
+			for (Enemy enemy : enemies) {
+				balance = player.getBalanceForSoundFrom(enemy);
+				soundManager.changeVolume(enemy.name, balance, 1);
+			}
 		}
 	}
 
