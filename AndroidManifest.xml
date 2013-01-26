@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.ggj2013"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.ggj2013"
     android:versionCode="1"
-    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:hardwareAccelerated="true"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        <activity
+            android:name="org.ggj2013.StartActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_start"
+            android:theme="@style/FullscreenTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.ggj2013.MenuActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
         <activity
             android:name="org.ggj2013.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.TriangleSample"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_test"
-            android:theme="@style/FullscreenTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".test.Texample"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_test"
-            android:theme="@style/FullscreenTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

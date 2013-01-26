@@ -15,7 +15,6 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 public class Game {
-
 	boolean debug = true;
 
 	private long timeDiff = 2000000; // 2ms
@@ -87,23 +86,22 @@ public class Game {
 		int h = c.getHeight();
 		float textsize = 64 * w / 1000;
 
-		// float alpha = System.currentTimeMillis() / 1000;
+		int alpha = 255;
 
-		Paint red = createPaint(Color.RED, textsize);
-		Paint redinnerglow = createPaint(Color.RED, textsize);
+		Paint red = createPaint(Color.RED, textsize, alpha);
+		Paint redinnerglow = createPaint(Color.RED, textsize, alpha);
 		redinnerglow.setMaskFilter(new BlurMaskFilter(100, Blur.INNER));
-		Paint redouterglow = createPaint(Color.RED, textsize);
+		Paint redouterglow = createPaint(Color.RED, textsize, alpha);
 		redouterglow.setMaskFilter(new BlurMaskFilter(100, Blur.OUTER));
-		Paint white = createPaint(Color.WHITE, textsize * 2);
-		Paint grey = createPaint(Color.DKGRAY, textsize * 2);
-		Paint black = createPaint(Color.BLACK, textsize);
-		Paint yellow = createPaint(Color.YELLOW, textsize);
-		Paint green = createPaint(Color.GREEN, textsize);
-		Paint greeninnerglow = createPaint(Color.GREEN, textsize);
+		Paint white = createPaint(Color.WHITE, textsize * 2, alpha);
+		Paint grey = createPaint(Color.DKGRAY, textsize * 2, alpha);
+		Paint black = createPaint(Color.BLACK, textsize, alpha);
+		Paint yellow = createPaint(Color.YELLOW, textsize, alpha);
+		Paint green = createPaint(Color.GREEN, textsize, alpha);
+		Paint greeninnerglow = createPaint(Color.GREEN, textsize, alpha);
 		greeninnerglow.setMaskFilter(new BlurMaskFilter(100, Blur.INNER));
-		Paint greenouterglow = createPaint(Color.GREEN, textsize);
+		Paint greenouterglow = createPaint(Color.GREEN, textsize, alpha);
 		greenouterglow.setMaskFilter(new BlurMaskFilter(100, Blur.OUTER));
-		;
 
 		if (arrow == null) {
 			arrow = new Path();
@@ -201,6 +199,11 @@ public class Game {
 
 			currentRoom.onRender(c);
 		}
+
+		// TODO player pulse fade
+		alpha = (int) (127f + 128f * (Math
+				.sin(System.currentTimeMillis() % 1000000 * 0.001f)));
+		c.drawRect(c.getClipBounds(), createPaint(Color.BLACK, textsize, alpha));
 	}
 
 	private void paintGlow(Canvas c, Entity e, float centerX, float centerY,
@@ -223,11 +226,12 @@ public class Game {
 		}
 	}
 
-	private Paint createPaint(int color, float textsize) {
+	private Paint createPaint(int color, float textsize, int alpha) {
 		Paint p = new Paint();
 		p.setColor(color);
 		p.setTextSize(textsize);
 		p.setStyle(Style.FILL);
+		p.setAlpha(alpha);
 		// p.setAntiAlias(true);
 		p.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 		return p;

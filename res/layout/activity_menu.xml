@@ -1,0 +1,119 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".MenuActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/infoText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/info_text"
+            android:textAllCaps="true"
+            android:textColor="@color/gray"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/infoText2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/info_text2"
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btn_lvl1"
+            android:text="@string/btn_lvl1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/white"
+            android:background="@color/gray"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_lvl2"
+            android:text="@string/btn_lvl2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/white"
+            android:background="@color/gray"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_lvl3"
+            android:text="@string/btn_lvl3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/white"
+            android:background="@color/gray"
+            android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_lvl4"
+            android:text="@string/btn_lvl4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/white"
+            android:background="@color/gray"
+            android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_lvl5"
+            android:text="@string/btn_lvl5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/white"
+            android:background="@color/gray"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+</FrameLayout>
