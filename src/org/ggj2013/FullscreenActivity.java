@@ -142,7 +142,8 @@ public class FullscreenActivity extends Activity implements
 
 				sum = sum.normalize();
 
-				lastOrientation = 90f + (float) Math.toDegrees(sum.getAlpha());
+				lastOrientation = 90f + (float) Math.toDegrees(sum.getAlpha())
+						- orientationOffset;
 			}
 		}
 	}

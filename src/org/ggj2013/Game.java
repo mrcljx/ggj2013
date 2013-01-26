@@ -132,7 +132,7 @@ public class Game {
 
 		// compass
 		c.translate(centerX, centerY);
-		c.rotate(-currentRoom.player.orientation - activity.orientationOffset);
+		c.rotate(-currentRoom.player.orientation);
 		c.drawCircle(0, 0, (w / 2) - 20, cp);
 		c.drawCircle(0, 0, (w / 2) - 30, bg);
 		c.drawText("N", 0, -(w / 2) + 20, cp);
@@ -147,10 +147,8 @@ public class Game {
 
 		c.restore();
 		c.translate(centerX, centerY);
-		c.rotate(90f
-				- (float) Math.toDegrees(currentRoom.player
-						.relativeOrientationFor(currentRoom.damsel).getAlpha())
-				- activity.orientationOffset);
+		c.rotate(90f - (float) Math.toDegrees(currentRoom.player
+				.relativeOrientationFor(currentRoom.damsel).getAlpha()));
 		c.scale(5, 5);
 		c.drawPath(arrow, ar);
 
