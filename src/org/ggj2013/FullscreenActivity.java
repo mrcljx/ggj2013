@@ -22,7 +22,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	/**
 	 * 0 = North, 180 = South
 	 */
-	int dLastOrientation = -1;
+	float dLastOrientation = -1;
 
 	private SensorManager sensorManager;
 
@@ -90,7 +90,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private void onCompassEvent(SensorEvent event) {
 		this.magneticField = event.values.clone();
-		long now = event.timestamp;
 
 		if (gravity != null && magneticField != null) {
 			float[] inR = new float[16];
@@ -105,18 +104,45 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 			if (success) {
 				SensorManager.getOrientation(inR, orientVals);
 				float azimuth = orientVals[0] * rad2deg;
-				int orientation = Math.round(azimuth / 10f) * 10;
+				float orientation = azimuth;
+				// float orientation = Math.round(azimuth / 10f) * 10;
 
-				int diff = orientation - dLastOrientation;
-				diff = (diff + 180 + 360) % 360 - 180;
-				diff = Math.abs(diff);
+				// float diff = orientation - dLastOrientation;
+				// diff = (diff + 180 + 360) % 360 - 180;
+				// diff = Math.abs(diff);
 
-				if (diff > 10) {
-					dLastOrientation = orientation;
-					Log.d("COMPASS", Integer.toString(dLastOrientation));
-				}
+				// if (diff > 10) {
+				dLastOrientation = lowPass(orientation, dLastOrientation);
+				Log.d("COMPASS", Float.toString(dLastOrientation));
+				// }
 			}
 		}
+	}
+
+	/*
+	 * time smoothing constant for low-pass filter 0 ≤ alpha ≤ 1 ; a smaller
+	 * value basically means more smoothing See:
+	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
+	 */
+	static final float ALPHA = 0.15f;
+
+	protected float lowPass(float input, float output) {
+
+		float diff = input - output;
+		diff = (diff + 180 + 360) % 360 - 180;
+		diff = Math.abs(diff);
+
+		if (input * output < 0 && diff < 180 && Math.abs(input - output) > 180) {
+
+			if (output < 0) {
+				output += 360;
+			} else {
+				output -= 360;
+			}
+		}
+
+		output = output + ALPHA * (input - output);
+		return output;
 	}
 
 	enum Movement {
