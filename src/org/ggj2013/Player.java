@@ -19,12 +19,10 @@ public class Player extends Entity {
 		balance[0] = 0.5f - (float) normalized.getX() * 0.5f;
 		balance[1] = 0.5f + (float) normalized.getX() * 0.5f;
 
-		float distance = (float) distanceTo(e);
+		float distance = distanceTo(e);
 		float distanceVolume = 1;
 
-		if (distance <= HEARING_MINIMUM) {
-			distanceVolume = 1f;
-		} else {
+		if (distance > HEARING_MINIMUM) {
 			distanceVolume = 1f - ((distance - HEARING_MINIMUM) / (e.volume() - HEARING_MINIMUM));
 		}
 

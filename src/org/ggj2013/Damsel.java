@@ -8,6 +8,6 @@ public class Damsel extends Entity {
 
 	@Override
 	public float volume() {
-		return 15;
+		return 30;
 	}
 }

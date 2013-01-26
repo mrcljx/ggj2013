@@ -23,7 +23,7 @@ public class SoundPackStandard extends SoundPack {
 		sounds.put(SoundPackStandard.ENEMY_MEDIUM, R.raw.enemy_medium);
 		sounds.put(SoundPackStandard.ENEMY_SMALL, R.raw.enemy_small);
 
-		sounds.put(SoundPackStandard.GOAL, R.raw.ziel_neu_01);
+		sounds.put(SoundPackStandard.GOAL, R.raw.ziel_neu_02);
 
 		return sounds;
 	}

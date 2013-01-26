@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
 import android.util.Log;
 
 public class SoundManager {
@@ -32,10 +33,23 @@ public class SoundManager {
 	public void play(final String ident, final String soundKey,
 			float[] balance, final float masterVolume, final int loops) {
 
-		Log.d("SoundManager", "Start playing sound: " + ident);
+		Log.d("SoundManager", "Start playing sound " + ident + " from "
+				+ soundKey);
 
 		MediaPlayer mediaPlayer = MediaPlayer.create(this.appContext,
 				sounds.get(soundKey));
+
+		mediaPlayer.setOnErrorListener(new OnErrorListener() {
+
+			@Override
+			public boolean onError(MediaPlayer mp, int what, int extra) {
+				Log.e("SoundManager",
+						"Mediaplayer caused error (" + soundKey + "): "
+								+ Integer.toString(what) + " "
+								+ Integer.toString(extra));
+				return true;
+			}
+		});
 
 		if (loops == SoundManager.LOOPS_INFINITE) {
 			mediaPlayer.setLooping(true);

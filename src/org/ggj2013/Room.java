@@ -54,7 +54,8 @@ public class Room {
 			startedSound = true;
 
 			context.soundManager.play(damsel.name, SoundPackStandard.GOAL,
-					SoundManager.BALANCE_CENTER, 1f, -1);
+					SoundManager.BALANCE_CENTER, 1f,
+					SoundManager.LOOPS_INFINITE);
 
 			for (Enemy e : enemies) {
 				context.soundManager.play(e.name, e.getSoundName(),
