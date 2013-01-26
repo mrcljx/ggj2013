@@ -1,7 +1,5 @@
 package org.ggj2013;
 
-import org.ggj2013.util.SystemUiHider;
-
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -121,7 +119,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				float azimuth = orientVals[0] * rad2deg;
 				int orientation = Math.round(azimuth / 10f) * 10;
 
-				// 0-350°
+				// 0-350ï¿½
 				orientation = (orientation + 180);
 				if (orientation == 360) {
 					orientation = 0;
