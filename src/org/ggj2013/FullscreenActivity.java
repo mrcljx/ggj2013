@@ -27,9 +27,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	/**
 	 * 0 = North, 180 = South
 	 */
-	private int dLastOrientation = -1;
-
-	private long dLastTimestamp;
+	int dLastOrientation = -1;
 
 	private SensorManager sensorManager;
 
@@ -114,25 +112,16 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				float azimuth = orientVals[0] * rad2deg;
 				int orientation = Math.round(azimuth / 10f) * 10;
 
-				// 0-350�
-				orientation = (orientation + 180);
-				if (orientation == 360) {
-					orientation = 0;
-				}
-
 				int diff = orientation - dLastOrientation;
 				diff = (diff + 180 + 360) % 360 - 180;
 				diff = Math.abs(diff);
 
-				float factor = (now - dLastTimestamp) / 100000000f;
-
-				if (dLastOrientation < 0 || (diff < (45 * factor)) && diff > 0) {
+				if (diff > 10) {
 					dLastOrientation = orientation;
-					Log.e("COMPASS", Integer.toString(dLastOrientation));
+					Log.d("COMPASS", Integer.toString(dLastOrientation));
 				}
 			}
 		}
-		dLastTimestamp = now;
 	}
 
 	enum Movement {
