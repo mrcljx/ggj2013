@@ -10,7 +10,6 @@ public class Player extends Entity {
 	}
 
 	float HEARING_MINIMUM = 3f;
-	float HEARING_MAXIMUM = 12f;
 
 	public float[] getBalanceForSoundFrom(Entity e) {
 		Vector3D normalized = relativeOrientationFor(e);
@@ -26,11 +25,11 @@ public class Player extends Entity {
 		if (distance < HEARING_MINIMUM) {
 			distanceVolume = 1f;
 		} else {
-			distanceVolume = 1f - ((distance - HEARING_MINIMUM) / (HEARING_MAXIMUM - HEARING_MINIMUM));
+			distanceVolume = 1f - ((distance - HEARING_MINIMUM) / (e.volume() - HEARING_MINIMUM));
 		}
 
 		distanceVolume = (float) Math.pow(
-				Math.max(0, Math.min(1, distanceVolume)), 2);
+				MathUtils.clamp(distanceVolume, 0, 1), 2);
 
 		if (normalized.getY() < 0) {
 			if (balance[0] <= 0.5f) {

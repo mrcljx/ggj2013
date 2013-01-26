@@ -50,7 +50,7 @@ public class Room {
 	public boolean startedSound = false;
 
 	public void tryStartSound() {
-		if (context.soundManager.loaded && !startedSound) {
+		if (!startedSound) {
 			startedSound = true;
 
 			context.soundManager.play(damsel.name, SoundPackStandard.GOAL,
@@ -96,7 +96,7 @@ public class Room {
 				new Vector3D(10, -10, 0) // bottomRight
 				)) {
 			Log.d("Collision", "Hits wall");
-			player.moveForward((timeDiff * -1) * 2);
+			player.moveForward(-0.1f);
 			this.context.activity.vibrate();
 			return;
 		} else {

@@ -1,5 +1,9 @@
 package org.ggj2013;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
+import android.graphics.BlurMaskFilter;
+import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -11,6 +15,9 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 public class Game {
+
+	boolean debug = false;
+
 	private long timeDiff = 2000000; // 2ms
 	private long lastUpdate = -1;
 	private Room currentRoom;
@@ -24,7 +31,10 @@ public class Game {
 	private Path arrow;
 
 	private Paint red;
+	private Paint redinnerglow;
+	private Paint redouterglow;
 	private Paint white;
+	private Paint grey;
 	private Paint black;
 	private Paint yellow;
 	private Paint green;
@@ -88,8 +98,20 @@ public class Game {
 
 		if (red == null)
 			red = createPaint(Color.RED, textsize);
+		if (redinnerglow == null) {
+			redinnerglow = createPaint(Color.RED, textsize);
+			BlurMaskFilter bmf = new BlurMaskFilter(100, Blur.INNER);
+			redinnerglow.setMaskFilter(bmf);
+		}
+		if (redouterglow == null) {
+			redouterglow = createPaint(Color.RED, textsize);
+			BlurMaskFilter bmf = new BlurMaskFilter(100, Blur.OUTER);
+			redouterglow.setMaskFilter(bmf);
+		}
 		if (white == null)
 			white = createPaint(Color.WHITE, textsize * 2);
+		if (grey == null)
+			grey = createPaint(Color.DKGRAY, textsize * 2);
 		if (black == null)
 			black = createPaint(Color.BLACK, textsize);
 		if (yellow == null)
@@ -105,33 +127,72 @@ public class Game {
 		// bg
 		c.drawRect(c.getClipBounds(), black);
 
-		// debug
-		c.drawText(String.format("x: %.2f / y: %.2f",
-				currentRoom.player.position.getX(),
-				currentRoom.player.position.getY()), centerX, 80, green);
+		if (debug) {
+			// debug
+			c.drawText(String.format("x: %.2f / y: %.2f",
+					currentRoom.player.position.getX(),
+					currentRoom.player.position.getY()), centerX, 80, green);
 
-		// settings
-		int left = w - (h / 10);
-		int top = h - (h / 10);
-		int right = w - 10;
-		int bottom = h - 10;
-		settingsBounds = new Rect(left, top, right, bottom);
-		c.drawRect(settingsBounds, red);
-		c.drawText("S", left + textsize / 2, top + textsize * 2, white);
+			// settings
+			int left = w - (h / 10);
+			int top = h - (h / 10);
+			int right = w - 10;
+			int bottom = h - 10;
+			settingsBounds = new Rect(left, top, right, bottom);
+			c.drawRect(settingsBounds, red);
+			c.drawText("S", left + textsize / 2, top + textsize * 2, white);
 
-		left = 10;
-		right = left + settingsBounds.width();
-		resetBounds = new Rect(left, top, right, bottom);
-		c.drawRect(resetBounds, red);
-		c.drawText("R", left + textsize / 2, top + textsize * 2, white);
+			left = 10;
+			right = left + settingsBounds.width();
+			resetBounds = new Rect(left, top, right, bottom);
+			c.drawRect(resetBounds, red);
+			c.drawText("R", left + textsize / 2, top + textsize * 2, white);
+		}
 
 		if (currentRoom != null) {
-			// compass
-			c.translate(centerX, centerY);
-			c.rotate(-currentRoom.player.orientation);
-			c.drawCircle(0, 0, (w / 2) - 20, white);
-			c.drawCircle(0, 0, (w / 2) - 30, black);
-			c.drawText("N", 0, -(w / 2) + 20, white);
+			// enemies
+			for (int i = 0; i < currentRoom.enemies.size(); i++) {
+				Enemy e = currentRoom.enemies.get(i);
+				double distance = currentRoom.player.distanceTo(e);
+
+				if (debug) {
+					c.restore();
+					c.save();
+					float x = centerX
+							+ ((w / 5) * (i - currentRoom.enemies.size() + 2));
+					float y = centerY - (w / 5);
+					c.translate(x, y);
+					c.rotate(90f - (float) Math.toDegrees(currentRoom.player
+							.relativeOrientationFor(e).getAlpha()));
+					c.drawPath(arrow, yellow);
+					c.restore();
+					c.save();
+					c.drawText(String.format("%.1f", distance), x - textsize, y
+							- textsize, yellow);
+				}
+
+				if (distance < 5) {
+					Vector3D v = currentRoom.player.relativeOrientationFor(e);
+					double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(
+							centerX, centerY, v.getX() * 1000 + centerX,
+							v.getY() * 1000 + centerY, 0, 0, w, h);
+					float newX = (float) clip[2] * (1);
+					float newY = h - (float) clip[3];
+					c.restore();
+					c.save();
+					c.drawCircle(newX, newY, 100, redinnerglow);
+					c.drawCircle(newX, newY, 100, redouterglow);
+				}
+			}
+
+			if (debug) {
+				// compass
+				c.translate(centerX, centerY);
+				c.rotate(-currentRoom.player.orientation);
+				c.drawCircle(0, 0, (w / 2) - 20, white);
+				c.drawCircle(0, 0, (w / 2) - 30, black);
+				c.drawText("N", 0, -(w / 2) + 20, white);
+			}
 
 			// direction
 			if (arrow == null) {
@@ -149,31 +210,14 @@ public class Game {
 			c.rotate(90f - (float) Math.toDegrees(currentRoom.player
 					.relativeOrientationFor(currentRoom.damsel).getAlpha()));
 			c.scale(5, 5);
-			c.drawPath(arrow, red);
-			c.restore();
-			c.save();
-			c.drawText(
-					String.format("%.1f",
-							currentRoom.player.distanceTo(currentRoom.damsel)),
-					centerX - textsize, centerY - textsize, black);
+			c.drawPath(arrow, grey);
 
-			// enemies
-			for (int i = 0; i < currentRoom.enemies.size(); i++) {
-				Enemy e = currentRoom.enemies.get(i);
+			if (debug) {
 				c.restore();
 				c.save();
-				float x = centerX
-						+ ((w / 5) * (i - currentRoom.enemies.size() + 2));
-				float y = centerY - (w / 5);
-				c.translate(x, y);
-				c.rotate(90f - (float) Math.toDegrees(currentRoom.player
-						.relativeOrientationFor(e).getAlpha()));
-				c.drawPath(arrow, yellow);
-				c.restore();
-				c.save();
-				c.drawText(
-						String.format("%.1f", currentRoom.player.distanceTo(e)),
-						x - textsize, y - textsize, yellow);
+				c.drawText(String.format("%.1f",
+						currentRoom.player.distanceTo(currentRoom.damsel)),
+						centerX - textsize, centerY - textsize, black);
 			}
 
 			currentRoom.onRender(c);

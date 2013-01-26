@@ -48,4 +48,8 @@ public class Entity {
 	public void moveForward(float amount) {
 		position = position.add(amount, getLookDirection());
 	}
+
+	public float volume() {
+		return 5;
+	}
 }

@@ -195,21 +195,18 @@ public class FullscreenActivity extends Activity implements
 
 	public void vibrate() {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-		int dot = 300;
-		int gap = 2000;
-		long[] pattern = { 0, dot, gap, dot, gap };
-
-		v.vibrate(pattern, -1);
+		v.vibrate(50);
 	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (gameView.game.settingsBounds.contains((int) event.getX(),
-				(int) event.getY())) {
+		if (gameView.game.settingsBounds != null
+				&& gameView.game.settingsBounds.contains((int) event.getX(),
+						(int) event.getY())) {
 			orientationOffset = _lastOrientation;
-		} else if (gameView.game.resetBounds.contains((int) event.getX(),
-				(int) event.getY())) {
+		} else if (gameView.game.resetBounds != null
+				&& gameView.game.resetBounds.contains((int) event.getX(),
+						(int) event.getY())) {
 			gameView.game.restart();
 		}
 
