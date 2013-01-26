@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -36,6 +37,10 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		super.onCreate(savedInstanceState);
 
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(new GameView(this));
 
 		game = new Game();

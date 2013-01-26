@@ -1,6 +1,10 @@
 package org.ggj2013;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Typeface;
 import android.util.Log;
 
 public class Game {
@@ -44,6 +48,18 @@ public class Game {
 	}
 
 	public void onRender(Canvas c) {
+		Paint bg = new Paint();
+		bg.setColor(Color.RED);
+		c.drawRect(c.getClipBounds(), bg);
+
+		Paint fg = new Paint();
+		fg.setColor(Color.BLACK);
+		fg.setTextSize(64);
+		fg.setStyle(Style.FILL);
+		fg.setAntiAlias(true);
+		fg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+		c.drawText("Hello", 50, 50, fg);
+
 		if (currentRoom != null) {
 			currentRoom.onRender(c);
 		}

@@ -3,13 +3,17 @@ package org.ggj2013;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class Entity {
-	public Vector3D position;
-	public double size;
+	public Vector3D position = Vector3D.ZERO;
+	public double size = 0;
 
 	/**
 	 * Orientation of entity in Radians.
 	 */
 	public double orientation;
+
+	public Entity() {
+
+	}
 
 	public double distanceTo(Entity e) {
 		return distanceTo(e.position);
