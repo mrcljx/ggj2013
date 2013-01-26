@@ -37,8 +37,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private float[] magneticField;
 
-	private Game game;
-
 	SoundManager soundManager;
 
 	@Override
@@ -51,8 +49,6 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(new GameView(this));
-
-		game = new Game();
 
 		soundManager = new SoundManager(getApplicationContext());
 		soundManager.loadSoundPack(new SoundPackStandard());
