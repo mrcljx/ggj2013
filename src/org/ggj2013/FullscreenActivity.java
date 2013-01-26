@@ -71,7 +71,7 @@ public class FullscreenActivity extends Activity implements
 				SensorManager.SENSOR_DELAY_GAME);
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-				SensorManager.SENSOR_DELAY_NORMAL);
+				SensorManager.SENSOR_DELAY_GAME);
 
 		gameView.game.onResume();
 	}
