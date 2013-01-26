@@ -126,8 +126,8 @@ public class Game {
 		c.drawRect(settingsBounds, fg);
 		c.drawText("S", left + textsize / 2, top + textsize * 2, bg);
 
-		left = w - (h / 10) - settingsBounds.width() - 10;
-		right = w - 10 - settingsBounds.width() - 10;
+		left = 10;
+		right = left + settingsBounds.width();
 		resetBounds = new Rect(left, top, right, bottom);
 		c.drawRect(resetBounds, fg);
 		c.drawText("R", left + textsize / 2, top + textsize * 2, bg);
