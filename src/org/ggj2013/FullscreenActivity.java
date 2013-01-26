@@ -1,5 +1,11 @@
 package org.ggj2013;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -94,6 +100,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		}
 	}
 
+	private final List<Float> orientations = new LinkedList<Float>();
+
 	private void onCompassEvent(SensorEvent event) {
 		this.magneticField = event.values.clone();
 
@@ -101,17 +109,33 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 			float[] inR = new float[16];
 			float[] I = new float[16];
 			float[] orientVals = new float[3];
-			final float pi = (float) Math.PI;
-			final float rad2deg = 180f / pi;
 
 			boolean success = SensorManager.getRotationMatrix(inR, I, gravity,
 					magneticField);
 
 			if (success) {
 				SensorManager.getOrientation(inR, orientVals);
-				float azimuth = orientVals[0] * rad2deg;
-				float orientation = azimuth;
-				lastOrientation = lowPass(orientation, lastOrientation);
+				float orientation = (float) Math.toDegrees(orientVals[0]);
+
+				if (orientations.size() > 25) {
+					orientations.remove(0);
+				}
+
+				orientations.add(orientation);
+
+				Vector3D sum = Vector3D.ZERO;
+
+				for (float orient : orientations) {
+					Vector3D dir = Vector3D.MINUS_J;
+					Rotation rot = new Rotation(Vector3D.PLUS_K,
+							Math.toRadians(orient));
+					dir = rot.applyTo(dir);
+					sum = sum.add(dir);
+				}
+
+				sum = sum.normalize();
+
+				lastOrientation = 90f + (float) Math.toDegrees(sum.getAlpha());
 			}
 		}
 	}
