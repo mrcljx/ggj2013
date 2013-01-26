@@ -17,6 +17,7 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -166,9 +167,9 @@ public class FullscreenActivity extends Activity implements
 	}
 
 	private void onAcceleratorEvent(SensorEvent event) {
-		float LEG_THRSHOLD_AMPLITUDE = 2;
-		long activityLag = 30;
-		long inactivityLag = 300;
+		float LEG_THRSHOLD_AMPLITUDE = 1;
+		long activityLag = 5;
+		long inactivityLag = 500;
 		long now = System.currentTimeMillis();
 
 		final float z = event.values[2];
@@ -178,16 +179,18 @@ public class FullscreenActivity extends Activity implements
 		if (zDiff > LEG_THRSHOLD_AMPLITUDE) {
 			lastActivityTimestamp = now;
 
-			if (lastInactivityTimestamp + activityLag < now) {
+			if (lastInactivityTimestamp + activityLag <= now) {
 				if (lastActivity != Movement.MOVING) {
 					lastActivity = Movement.MOVING;
+					Log.d("SENSOR", "Move");
 				}
 			}
 		} else {
 			lastInactivityTimestamp = now;
-			if (lastActivityTimestamp + inactivityLag < now) {
+			if (lastActivityTimestamp + inactivityLag <= now) {
 				if (lastActivity != Movement.NONE) {
 					lastActivity = Movement.NONE;
+					Log.d("SENSOR", "Stop");
 				}
 			}
 		}
