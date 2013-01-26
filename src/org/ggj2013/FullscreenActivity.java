@@ -143,8 +143,7 @@ public class FullscreenActivity extends Activity implements
 
 				sum = sum.normalize();
 
-				orientation = 90f + (float) Math.toDegrees(sum.getAlpha());
-				_lastOrientation = lowPass(_lastOrientation, orientation);
+				_lastOrientation = 90f + (float) Math.toDegrees(sum.getAlpha());
 				lastOrientation = _lastOrientation - orientationOffset;
 			}
 		}
@@ -161,27 +160,6 @@ public class FullscreenActivity extends Activity implements
 	 * value basically means more smoothing See:
 	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
 	 */
-	static final float ALPHA = 0.05f;
-
-	protected float lowPass(float input, float output) {
-
-		float diff = input - output;
-		diff = (diff + 180f + 360f) % 360f - 180f;
-		diff = Math.abs(diff);
-
-		if (input * output < 0f && diff < 180f
-				&& Math.abs(input - output) > 180f) {
-
-			if (output < 0f) {
-				output += 360f;
-			} else {
-				output -= 360f;
-			}
-		}
-
-		output = output + ALPHA * (input - output);
-		return output;
-	}
 
 	enum Movement {
 		NONE, MOVING
