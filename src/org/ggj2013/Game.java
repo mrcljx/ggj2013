@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Typeface;
@@ -69,22 +70,46 @@ public class Game {
 	public void onRender(Canvas c) {
 		c.setMatrix(new Matrix());
 
+		int centerX = c.getClipBounds().centerX();
+		int centerY = c.getClipBounds().centerY();
+
 		Paint bg = new Paint();
 		bg.setColor(Color.RED);
 		c.drawRect(c.getClipBounds(), bg);
 
+		int w = c.getWidth();
+		int h = c.getHeight();
+		float textsize = 64 * w / 1000;
+
+		Paint ar = new Paint();
+		ar.setColor(Color.WHITE);
+		ar.setAntiAlias(true);
+		Paint cp = new Paint();
+		cp.setColor(Color.BLACK);
+		cp.setTextSize(textsize);
+		cp.setStyle(Style.FILL);
+		cp.setAntiAlias(true);
+		cp.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
 		Paint fg = new Paint();
 		fg.setColor(Color.BLACK);
-		fg.setTextSize(64);
+		fg.setTextSize(textsize);
 		fg.setStyle(Style.FILL);
 		fg.setAntiAlias(true);
 		fg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-		c.drawText(String.format("X: %f, Y: %f",
-				currentRoom.player.position.getX(),
-				currentRoom.player.position.getY()), 30, 80, fg);
+		fg.setTextAlign(Align.CENTER);
 
-		int centerX = c.getClipBounds().centerX();
-		int centerY = c.getClipBounds().centerY();
+		c.drawText(String.format("x: %.2f / y: %.2f",
+				currentRoom.player.position.getX(),
+				currentRoom.player.position.getY()), centerX, 80, fg);
+
+		c.save();
+
+		c.translate(centerX, centerY);
+		c.rotate(-currentRoom.player.orientation);
+		c.drawCircle(0, 0, (w / 2) - 20, cp);
+		c.drawCircle(0, 0, (w / 2) - 30, bg);
+		c.drawText("N", 0, -(w / 2) + 20, cp);
 
 		Path arrow = new Path();
 		arrow.moveTo(0, 10);
@@ -93,17 +118,18 @@ public class Game {
 		arrow.lineTo(20, 30);
 		arrow.close();
 
-		c.save();
-		c.translate(centerX, centerY);
-		c.rotate(-currentRoom.player.orientation);
-		c.scale(5, 5);
-		c.drawPath(arrow, fg);
+		// c.restore();
+		// c.translate(centerX, centerY);
+		// c.rotate(-currentRoom.player.orientation);
+		// c.scale(5, 5);
+		// c.drawPath(arrow, fg);
 
 		c.restore();
 		c.translate(centerX, centerY);
 		c.rotate(90f - (float) Math.toDegrees(currentRoom.player
 				.relativeOrientationFor(currentRoom.damsel).getAlpha()));
-		c.drawPath(arrow, bg);
+		c.scale(5, 5);
+		c.drawPath(arrow, ar);
 
 		if (currentRoom != null) {
 			currentRoom.onRender(c);
