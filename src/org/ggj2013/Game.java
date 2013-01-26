@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Typeface;
@@ -69,6 +70,9 @@ public class Game {
 	public void onRender(Canvas c) {
 		c.setMatrix(new Matrix());
 
+		int centerX = c.getClipBounds().centerX();
+		int centerY = c.getClipBounds().centerY();
+
 		Paint bg = new Paint();
 		bg.setColor(Color.RED);
 		c.drawRect(c.getClipBounds(), bg);
@@ -93,13 +97,11 @@ public class Game {
 		fg.setStyle(Style.FILL);
 		fg.setAntiAlias(true);
 		fg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+		fg.setTextAlign(Align.CENTER);
 
-		c.drawText(String.format("X: %f; Y: %f",
+		c.drawText(String.format("x: %.2f / y: %.2f",
 				currentRoom.player.position.getX(),
-				currentRoom.player.position.getY()), 30, 80, fg);
-
-		int centerX = c.getClipBounds().centerX();
-		int centerY = c.getClipBounds().centerY();
+				currentRoom.player.position.getY()), centerX, 80, fg);
 
 		c.save();
 
