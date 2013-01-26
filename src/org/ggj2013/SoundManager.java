@@ -6,6 +6,8 @@ import java.util.Map;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
+import android.util.Log;
 
 public class SoundManager {
 	private final Context pContext;
@@ -26,9 +28,22 @@ public class SoundManager {
 
 	public Map<String, Integer> sounds = new HashMap<String, Integer>();
 	public Map<String, Integer> streams = new HashMap<String, Integer>();
+	public Map<Integer, Boolean> soundLoaded = new HashMap<Integer, Boolean>();
+	public boolean loaded = false;
 
 	public SoundManager(Context appContext) {
 		sndPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 100);
+		sndPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+			@Override
+			public void onLoadComplete(SoundPool soundPool, int sampleId,
+					int status) {
+				soundLoaded.put(sampleId, (status == 0 ? true : false));
+
+				if (soundLoaded.size() == sounds.size()) {
+					loaded = true;
+				}
+			}
+		});
 		pContext = appContext;
 	}
 
@@ -36,10 +51,17 @@ public class SoundManager {
 		return sndPool.load(pContext, sound_id, 1);
 	}
 
-	public void play(String ident, String soundKey, float[] balance,
-			float masterVolume, int loops) {
+	public void play(final String ident, final String soundKey,
+			float[] balance, final float masterVolume, final int loops) {
+
+		Log.d("SoundManager", "Start playing sound: " + ident);
+
 		int streamId = sndPool.play(sounds.get(soundKey), masterVolume
 				* balance[0], masterVolume * balance[1], 1, loops, rate);
+
+		if (streamId == 0) {
+			throw new RuntimeException("Failed to play sound!");
+		}
 
 		streams.put(ident, streamId);
 	}

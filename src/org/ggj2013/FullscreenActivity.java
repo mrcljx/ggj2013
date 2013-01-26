@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.Window;
@@ -29,22 +30,17 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private float[] magneticField;
 
-	SoundManager soundManager;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(new GameView(this));
-
-		soundManager = new SoundManager(getApplicationContext());
-		soundManager.loadSoundPack(new SoundPackStandard());
-
 	}
 
 	@Override
@@ -114,20 +110,21 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	 * value basically means more smoothing See:
 	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
 	 */
-	static final float ALPHA = 0.15f;
+	static final float ALPHA = 0.08f;
 
 	protected float lowPass(float input, float output) {
 
 		float diff = input - output;
-		diff = (diff + 180 + 360) % 360 - 180;
+		diff = (diff + 180f + 360f) % 360f - 180f;
 		diff = Math.abs(diff);
 
-		if (input * output < 0 && diff < 180 && Math.abs(input - output) > 180) {
+		if (input * output < 0f && diff < 180f
+				&& Math.abs(input - output) > 180f) {
 
-			if (output < 0) {
-				output += 360;
+			if (output < 0f) {
+				output += 360f;
 			} else {
-				output -= 360;
+				output -= 360f;
 			}
 		}
 

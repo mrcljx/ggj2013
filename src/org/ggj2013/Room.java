@@ -21,19 +21,36 @@ public class Room {
 	public Damsel damsel;
 	public Status status = Status.ACTIVE;
 	private final FullscreenActivity context;
+	private final SoundManager soundManager;
 
 	public Room(FullscreenActivity context) {
-		this.player = new Player();
-		this.damsel = new Damsel();
-		this.damsel.position = this.damsel.position.add(new Vector3D(0, 10, 0));
-		this.enemies = new LinkedList<Enemy>();
+		player = new Player();
+		damsel = new Damsel();
+		damsel.position = player.position.add(new Vector3D(0, 10, 0));
+		enemies = new LinkedList<Enemy>();
 		this.context = context;
+
+		soundManager = new SoundManager(context.getApplicationContext());
+		soundManager.loadSoundPack(new SoundPackStandard());
+	}
+
+	public boolean startedSound = false;
+
+	public void tryStartSound() {
+		if (soundManager.loaded && !startedSound) {
+			startedSound = true;
+
+			soundManager.play("damsel", SoundPackStandard.CAT_MEOW,
+					SoundManager.BALANCE_CENTER, 1f, -1);
+		}
 	}
 
 	public void onUpdate(float timeDiff) {
 		if (this.status != Status.ACTIVE) {
 			return;
 		}
+
+		tryStartSound();
 
 		if (player.collidesWith(damsel)) {
 			this.status = Status.WON;
@@ -48,14 +65,54 @@ public class Room {
 			}
 		}
 
-		if (context.lastActivity == Movement.MOVING) {
-			Vector3D movement = new Vector3D(0, 1, 0);
-			Rotation rotation = new Rotation(Vector3D.PLUS_K,
-					Math.toRadians(context.lastOrientation));
-			movement = rotation.applyTo(movement);
-			player.position = player.position.add(timeDiff, movement);
+		player.orientation = context.lastOrientation;
 
+		if (context.lastActivity == Movement.MOVING) {
+			player.moveForward(timeDiff);
 			Log.d("Room Player Pos", player.position.toString());
+		}
+
+		if (startedSound) {
+			Vector3D look = player.getLookDirection();
+			Rotation lookToOrigin = new Rotation(look, Entity.FORWARD);
+			Vector3D toDamsel = player.vectorTo(damsel);
+			Vector3D toDamselNormalized = lookToOrigin.applyTo(toDamsel
+					.normalize());
+
+			float[] balance = new float[2];
+
+			balance[0] = 0.5f + (float) toDamselNormalized.getX() * 0.5f;
+			balance[1] = 0.5f - (float) toDamselNormalized.getX() * 0.5f;
+
+			float distance = (float) toDamsel.getNorm();
+			float distanceVolume = 1;
+
+			float minDistance = 3f;
+			float maxDistance = 12f;
+
+			if (distance < minDistance) {
+				distanceVolume = 1f;
+			} else {
+				distanceVolume = 1f - ((distance - minDistance) / (maxDistance - minDistance));
+			}
+
+			distanceVolume = (float) Math.pow(
+					Math.max(0, Math.min(1, distanceVolume)), 2);
+
+			if (toDamselNormalized.getY() < 0) {
+				if (balance[0] <= 0.5f) {
+					balance[0] = 0;
+				} else if (balance[1] <= 0.5f) {
+					balance[1] = 0;
+				}
+
+				float totalVolume = (float) Math.max(0,
+						1f + toDamselNormalized.getY() * 1.3f);
+				soundManager.changeVolume("damsel", balance, totalVolume
+						* distanceVolume);
+			} else {
+				soundManager.changeVolume("damsel", balance, distanceVolume);
+			}
 		}
 	}
 
