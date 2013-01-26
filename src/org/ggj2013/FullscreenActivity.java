@@ -233,9 +233,8 @@ public class FullscreenActivity extends Activity implements
 		if (settingsBounds.contains((int) event.getRawX(),
 				(int) event.getRawY())) {
 			orientationOffset = lastOrientation;
-		}
-
-		if (resetBounds.contains((int) event.getRawX(), (int) event.getRawY())) {
+		} else if (resetBounds.contains((int) event.getRawX(),
+				(int) event.getRawY())) {
 			game.restart();
 		}
 
