@@ -32,6 +32,8 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 	private Game game;
 
+	SoundManager soundManager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +46,9 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 		setContentView(new GameView(this));
 
 		game = new Game();
+
+		soundManager = new SoundManager(getApplicationContext());
+		soundManager.loadSoundPack(new SoundPackStandard());
 	}
 
 	@Override
@@ -119,6 +124,7 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 	}
 
 	private void onAcceleratorEvent(SensorEvent event) {
+
 		// TODO: Thresholds should be based on time diff (not on samples)
 		float LEG_THRSHOLD_AMPLITUDE = 5;
 		int LEG_THRSHOLD_INACTIVITY = 5;
@@ -130,6 +136,12 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 
 			if (mLastActivity != Movement.MOVING) {
 				mLastActivity = Movement.MOVING;
+
+				soundManager
+						.play(SoundPackStandard.CAT_MEOW,
+								SoundManager.BALANCE_FULL_LEFT,
+								SoundManager.VOLUME_100);
+
 				Log.e("MOVING", "WALKING");
 			}
 		} else {
