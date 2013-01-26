@@ -95,11 +95,15 @@ public class SoundManager {
 	}
 
 	public void autoPause() {
-		// sndPool.autoPause();
+		for (Map.Entry<String, MediaPlayer> sound : streams.entrySet()) {
+			sound.getValue().pause();
+		}
 	}
 
 	public void autoResume() {
-		// sndPool.autoResume();
+		for (Map.Entry<String, MediaPlayer> sound : streams.entrySet()) {
+			sound.getValue().start();
+		}
 	}
 
 	// Sample calls
