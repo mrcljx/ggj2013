@@ -67,7 +67,9 @@ public class Game {
 		fg.setStyle(Style.FILL);
 		fg.setAntiAlias(true);
 		fg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-		c.drawText("Hello", 50, 50, fg);
+		c.drawText(String.format("X: %f, Y: %f",
+				currentRoom.player.position.getX(),
+				currentRoom.player.position.getY()), 30, 80, fg);
 
 		int centerX = c.getClipBounds().centerX();
 		int centerY = c.getClipBounds().centerY();
@@ -79,11 +81,17 @@ public class Game {
 		arrow.lineTo(20, 30);
 		arrow.close();
 
+		c.save();
 		c.translate(centerX, centerY);
-		c.rotate(-activity.lastOrientation);
+		c.rotate(-currentRoom.player.orientation);
 		c.scale(5, 5);
 		c.drawPath(arrow, fg);
-		// c.drawRect(new Rect(centerX - 30, centerY - 30, 200, 280), fg);
+
+		c.restore();
+		c.translate(centerX, centerY);
+		c.rotate(90f - (float) Math.toDegrees(currentRoom.player
+				.relativeOrientationFor(currentRoom.damsel).getAlpha()));
+		c.drawPath(arrow, bg);
 
 		if (currentRoom != null) {
 			currentRoom.onRender(c);

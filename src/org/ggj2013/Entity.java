@@ -7,12 +7,12 @@ public class Entity {
 	public Vector3D position = Vector3D.ZERO;
 	public static final Vector3D FORWARD = Vector3D.PLUS_J;
 	public static final Vector3D UP = Vector3D.PLUS_K;
-	public double size = 1;
+	public float size = 1;
 
 	/**
 	 * Orientation of entity in Radians.
 	 */
-	public double orientation;
+	public float orientation;
 
 	public Entity() {
 
@@ -40,7 +40,7 @@ public class Entity {
 
 	public Vector3D getLookDirection() {
 		Vector3D forward = new Vector3D(0, 1, 0);
-		Rotation rotation = new Rotation(UP, Math.toRadians(orientation));
+		Rotation rotation = new Rotation(UP, Math.toRadians(-orientation));
 		return rotation.applyTo(forward);
 	}
 

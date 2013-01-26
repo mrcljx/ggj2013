@@ -2,6 +2,8 @@ package org.ggj2013;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -104,6 +106,12 @@ public class FullscreenActivity extends Activity implements SensorEventListener 
 				lastOrientation = lowPass(orientation, lastOrientation);
 			}
 		}
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
 	/*
