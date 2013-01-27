@@ -71,9 +71,18 @@ public class SoundManager {
 		mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
-				streamActive.put(ident, true);
+				// streamActive.put(ident, true);
 			}
 		});
+
+		// Media buffer listener
+		mediaPlayer
+				.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+					@Override
+					public void onBufferingUpdate(MediaPlayer mp, int percent) {
+						streamActive.put(ident, true);
+					}
+				});
 
 		if (loops == SoundManager.LOOPS_INFINITE) {
 			mediaPlayer.setLooping(true);
