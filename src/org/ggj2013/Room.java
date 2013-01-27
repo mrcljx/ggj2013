@@ -17,7 +17,7 @@ public class Room {
 		ACTIVE, WON, LOST
 	}
 
-	public final List<Enemy> enemies;
+	public final List<Enemy> enemies = new LinkedList<Enemy>();
 	public final Player player;
 	public final Damsel damsel;
 	public Status status = Status.ACTIVE;
@@ -32,18 +32,10 @@ public class Room {
 		this.game = game;
 
 		player = new Player("player");
-
-		if (cfg.playerPosition != null) {
-			player.position = cfg.playerPosition;
-		}
+		player.position = cfg.playerPosition;
 
 		damsel = new Damsel("damsel");
-
-		if (cfg.damselPosition != null) {
-			damsel.position = cfg.damselPosition;
-		}
-
-		enemies = new LinkedList<Enemy>();
+		damsel.position = cfg.damselPosition;
 
 		if (cfg.enemies != null) {
 			for (int i = 0; i < cfg.enemies.size(); i++) {
@@ -197,8 +189,8 @@ public class Room {
 	// RoomConfig
 
 	public static class RoomConfig {
-		Vector3D playerPosition;
-		Vector3D damselPosition;
+		Vector3D playerPosition = Vector3D.ZERO;
+		Vector3D damselPosition = new Vector3D(0, 5, 0);
 
 		HashMap<Vector3D, Enemy.Size> enemies;
 
