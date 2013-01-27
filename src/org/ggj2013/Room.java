@@ -89,6 +89,14 @@ public class Room {
 			game.soundManager.play(damsel.name, SoundPackStandard.DAMSEL,
 					SoundManager.BALANCE_CENTER, 1f,
 					SoundManager.LOOPS_INFINITE);
+			int[] suitableSeekPoints = new int[] { 0, 21000, 37000, 55000 };
+
+			int damselSeekTo = suitableSeekPoints[(int) (Math.random()
+					* (3 - 0) + 0)];
+
+			Log.d("Damsel seek", new Integer(damselSeekTo).toString());
+
+			game.soundManager.streams.get(damsel.name).seekTo(damselSeekTo);
 
 			for (Enemy e : enemies) {
 				game.soundManager.play(e.name, e.getSoundName(),
