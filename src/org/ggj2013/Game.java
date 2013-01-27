@@ -530,6 +530,7 @@ public class Game {
 		cfg.enemies.put(new Vector3D(8, 5, 0), Size.MEDIUM);
 		cfg.enemies.put(new Vector3D(-1, 8, 0), Size.BIG);
 		cfg.enemies.put(new Vector3D(10, 13, 0), Size.SMALL);
+		cfg.enemies.put(new Vector3D(16, 3, 0), Size.SMALL);
 		cfg.left = -4;
 		cfg.right = 25;
 		cfg.top = 15;
@@ -538,6 +539,18 @@ public class Game {
 
 		// TODO Level 5
 		cfg = new RoomConfig();
+		cfg.playerPosition = new Vector3D(0, 0, 0);
+		cfg.damselPosition = new Vector3D(22, 28, 0);
+		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
+		cfg.enemies.put(new Vector3D(-7, 5, 0), Size.SMALL);
+		cfg.enemies.put(new Vector3D(0, 10, 0), Size.MEDIUM);
+		cfg.enemies.put(new Vector3D(-5, 20, 0), Size.BIG);
+		cfg.enemies.put(new Vector3D(9, 24, 0), Size.SMALL);
+		cfg.enemies.put(new Vector3D(8, 28, 0), Size.MEDIUM);
+		cfg.left = -10;
+		cfg.right = 10;
+		cfg.top = 30;
+		cfg.bottom = -2;
 		levels.add(cfg);
 	}
 
