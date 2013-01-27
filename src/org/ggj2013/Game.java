@@ -157,8 +157,7 @@ public class Game {
 
 		c.save();
 
-		// bg
-		c.drawRect(c.getClipBounds(), black);
+		c.drawColor(Color.BLACK);
 
 		if (!isCalibrated) {
 			float yy = centerY - 5 * textsize;
@@ -259,36 +258,18 @@ public class Game {
 			return;
 		}
 
-		if (debug) {
-			// settings
-			int left = w - (h / 10);
-			int top = h - (h / 10);
-			int right = w - 10;
-			int bottom = h - 10;
-			settingsBounds = new Rect(left, top, right, bottom);
-			c.drawRect(settingsBounds, red);
-			c.drawText("S", left + textsize / 2, top + textsize * 2, white);
-
-			left = 10;
-			right = left + settingsBounds.width();
-			resetBounds = new Rect(left, top, right, bottom);
-			c.drawRect(resetBounds, red);
-			c.drawText("R", left + textsize / 2, top + textsize * 2, white);
-		}
-
 		if (currentRoom != null && currentRoom.player != null) {
 
 			// renderDamsel(c);
 
+			renderEnemies(c);
+			renderDirection(c, gray);
+			drawPulseOverlay(c);
+
 			if (debug) {
 				renderDebugCompass(c);
 				renderDebugEnemies(c, textsize, yellow);
-			}
 
-			renderEnemies(c);
-			renderDirection(c, gray);
-
-			if (debug) {
 				c.drawText(String.format("x: %.2f / y: %.2f",
 						currentRoom.player.position.getX(),
 						currentRoom.player.position.getY()), centerX, 80, green);
@@ -299,9 +280,9 @@ public class Game {
 			}
 		}
 
-		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds
-				* currentRoom.player.heartbeatLevel)));
-		c.drawRect(c.getClipBounds(), createPaint(Color.BLACK, textsize, alpha));
+		if (debug) {
+			renderDebugButtons(c, textsize, red, white);
+		}
 
 		Paint p = createPaint(Color.WHITE, textsize - 10, 255);
 		p.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
@@ -315,6 +296,36 @@ public class Game {
 		// walls
 		float[] distance = currentRoom.getWallDistance(currentRoom.player);
 		// TODO wall
+	}
+
+	private void renderDebugButtons(Canvas c, float textsize, Paint red,
+			Paint white) {
+		// settings
+		int left = screenWidth - (screenHeight / 10);
+		int top = screenHeight - (screenHeight / 10);
+		int right = screenWidth - 10;
+		int bottom = screenHeight - 10;
+		settingsBounds = new Rect(left, top, right, bottom);
+		c.drawRect(settingsBounds, red);
+		c.drawText("S", left + textsize / 2, top + textsize * 2, white);
+
+		left = 10;
+		right = left + settingsBounds.width();
+		resetBounds = new Rect(left, top, right, bottom);
+		c.drawRect(resetBounds, red);
+		c.drawText("R", left + textsize / 2, top + textsize * 2, white);
+	}
+
+	private void drawPulseOverlay(Canvas c) {
+		int alpha;
+		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds
+				* currentRoom.player.heartbeatLevel)));
+
+		Paint overlayPaint = new Paint();
+		overlayPaint.setColor(Color.BLACK);
+		overlayPaint.setAlpha(alpha);
+		overlayPaint.setStyle(Style.FILL);
+		c.drawRect(c.getClipBounds(), overlayPaint);
 	}
 
 	private void renderDamsel(Canvas c) {
