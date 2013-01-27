@@ -25,10 +25,10 @@ public class Room {
 	public Status status = Status.ACTIVE;
 	private final Game game;
 
-	private final Vector3D roomTopLeft;
-	private final Vector3D roomTopRight;
-	private final Vector3D roomBottomLeft;
-	private final Vector3D roomBottomRight;
+	private final float roomLeft;
+	private final float roomRight;
+	private final float roomTop;
+	private final float roomBottom;
 
 	public Room(Game game, RoomConfig cfg) {
 		this.game = game;
@@ -49,13 +49,23 @@ public class Room {
 			}
 		}
 
-		roomTopLeft = cfg.roomTopLeft;
-		roomTopRight = cfg.roomTopRight;
-		roomBottomLeft = cfg.roomBottomLeft;
-		roomBottomRight = cfg.roomBottomRight;
+		roomLeft = cfg.left;
+		roomRight = cfg.top;
+		roomTop = cfg.top;
+		roomBottom = cfg.bottom;
+
+		if (roomLeft >= roomRight) {
+			throw new RuntimeException("left bust be smaller than right");
+		}
+
+		if (roomBottom >= roomTop) {
+			throw new RuntimeException("bottom bust be smaller than top");
+		}
 	}
 
 	public boolean startedSound = false;
+
+	private float ignoreMovementFor;
 
 	public void tryStartSound() {
 		if (!startedSound) {
@@ -96,15 +106,26 @@ public class Room {
 
 		tryStartSound();
 
+		if (player.doCollision(roomLeft, roomBottom, roomRight, roomTop)) {
+			Log.d(TAG, "Collision: Hit wall");
+			player.moveForward(-0.5f);
+			this.game.activity.vibrate(50);
+			ignoreMovementFor = 0.25f + timeDiff;
+		} else if (ignoreMovementFor <= 0) {
+			player.orientation = lowPass(game.activity.lastOrientation,
+					player.orientation, timeDiff * 10f);
+
+			if (game.activity.lastActivity == Movement.MOVING) {
+				player.moveForward(timeDiff);
+			}
+		}
+
+		ignoreMovementFor -= timeDiff;
+		ignoreMovementFor = Math.max(0, ignoreMovementFor);
+
 		if (player.collidesWith(damsel)) {
 			this.status = Status.WON;
 			onWonGame();
-			return;
-		} else if (player.hitsWall(roomTopLeft, roomTopRight, roomBottomLeft,
-				roomBottomRight)) {
-			Log.d(TAG, "Collision: Hits wall");
-			player.moveForward(-0.5f);
-			this.game.activity.vibrate();
 			return;
 		} else {
 			for (Entity e : enemies) {
@@ -114,13 +135,6 @@ public class Room {
 					return;
 				}
 			}
-		}
-
-		player.orientation = lowPass(game.activity.lastOrientation,
-				player.orientation, timeDiff * 10f);
-
-		if (game.activity.lastActivity == Movement.MOVING) {
-			player.moveForward(timeDiff);
 		}
 
 		if (startedSound) {
@@ -196,9 +210,9 @@ public class Room {
 
 		HashMap<Vector3D, Enemy.Size> enemies;
 
-		Vector3D roomTopLeft = new Vector3D(-10, 10, 0);
-		Vector3D roomTopRight = new Vector3D(10, 10, 0);
-		Vector3D roomBottomLeft = new Vector3D(-10, -10, 0);
-		Vector3D roomBottomRight = new Vector3D(10, -10, 0);
+		float left = -10;
+		float right = 10;
+		float top = 10;
+		float bottom = -10;
 	}
 }

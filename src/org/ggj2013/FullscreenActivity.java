@@ -206,9 +206,9 @@ public class FullscreenActivity extends Activity implements
 		}
 	}
 
-	public void vibrate() {
+	public void vibrate(long duration) {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		v.vibrate(50);
+		v.vibrate(duration);
 	}
 
 	@Override
