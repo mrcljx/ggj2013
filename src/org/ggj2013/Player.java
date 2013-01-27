@@ -11,7 +11,7 @@ public class Player extends Entity {
 		super(name);
 	}
 
-	int heartbeatLevel = 1;
+	float heartbeatLevel = 1f;
 
 	public float[] getBalanceForSoundFrom(Entity e) {
 		Vector3D normalized = relativeOrientationFor(e);
@@ -86,32 +86,63 @@ public class Player extends Entity {
 	}
 
 	public void playHeartBeatSound(SoundManager soundManager) {
-		if (heartbeatLevel == 5) {
+		String soundId = soundIdForHeartbeat(heartbeatLevel);
+
+		if (soundId.equals(SoundPackStandard.HEARTBEAT_05)) {
 			soundManager.play("player_heartbeat",
 					SoundPackStandard.HEARTBEAT_05,
 					SoundManager.BALANCE_CENTER, 1f,
 					SoundManager.LOOPS_INFINITE);
 
-		} else if (heartbeatLevel == 4) {
+		} else if (soundId.equals(SoundPackStandard.HEARTBEAT_04)) {
 			soundManager.play("player_heartbeat",
 					SoundPackStandard.HEARTBEAT_04,
 					SoundManager.BALANCE_CENTER, 0.7f,
 					SoundManager.LOOPS_INFINITE);
-		} else if (heartbeatLevel == 3) {
+		} else if (soundId.equals(SoundPackStandard.HEARTBEAT_03)) {
 			soundManager.play("player_heartbeat",
 					SoundPackStandard.HEARTBEAT_03,
 					SoundManager.BALANCE_CENTER, 0.5f,
 					SoundManager.LOOPS_INFINITE);
-		} else if (heartbeatLevel == 2) {
+		} else if (soundId.equals(SoundPackStandard.HEARTBEAT_02)) {
 			soundManager.play("player_heartbeat",
 					SoundPackStandard.HEARTBEAT_02,
 					SoundManager.BALANCE_CENTER, 0.3f,
 					SoundManager.LOOPS_INFINITE);
-		} else {
+		} else if (soundId.equals(SoundPackStandard.HEARTBEAT_01)) {
 			soundManager.play("player_heartbeat",
 					SoundPackStandard.HEARTBEAT_01,
 					SoundManager.BALANCE_CENTER, 0.2f,
 					SoundManager.LOOPS_INFINITE);
 		}
+	}
+
+	public String soundIdForHeartbeat(float level) {
+		if (level > 0.8f) {
+			return SoundPackStandard.HEARTBEAT_05;
+		} else if (level > 0.6f) {
+			return SoundPackStandard.HEARTBEAT_04;
+		} else if (level > 0.4f) {
+			return SoundPackStandard.HEARTBEAT_03;
+		} else if (level > 0.2f) {
+			return SoundPackStandard.HEARTBEAT_01;
+		} else {
+			return SoundPackStandard.HEARTBEAT_01;
+		}
+	}
+
+	public void updateHeartbeatLevel(float newLevel, SoundManager soundManager) {
+		newLevel = MathUtils.clamp(newLevel, 0, 1);
+
+		String oldSoundId = soundIdForHeartbeat(heartbeatLevel);
+		String newSoundId = soundIdForHeartbeat(newLevel);
+
+		heartbeatLevel = newLevel;
+
+		if (!oldSoundId.equals(newSoundId)) {
+			Log.d("Player", "New heartbeat level: " + newSoundId);
+			playHeartBeatSound(soundManager);
+		}
+
 	}
 }

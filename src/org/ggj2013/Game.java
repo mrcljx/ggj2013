@@ -317,13 +317,13 @@ public class Game {
 	}
 
 	private void drawPulseOverlay(Canvas c) {
-		int alpha;
-		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds
-				* currentRoom.player.heartbeatLevel)));
+		float heartBeatMod = (1f + currentRoom.player.heartbeatLevel * 2f);
+		float alpha = 0.5f + 0.5f * (float) Math.sin(runningForSeconds
+				* heartBeatMod);
 
 		Paint overlayPaint = new Paint();
 		overlayPaint.setColor(Color.BLACK);
-		overlayPaint.setAlpha(alpha);
+		overlayPaint.setAlpha(MathUtils.toByte(alpha));
 		overlayPaint.setStyle(Style.FILL);
 		c.drawRect(c.getClipBounds(), overlayPaint);
 	}
