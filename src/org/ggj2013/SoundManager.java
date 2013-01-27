@@ -97,7 +97,6 @@ public class SoundManager {
 			float masterVolume) {
 
 		MediaPlayer mp = streams.get(streamIdent);
-
 		if (mp != null && streamActive.containsKey(streamIdent)
 				&& streamActive.get(streamIdent) == true)
 			mp.setVolume(masterVolume * balance[0], masterVolume * balance[1]);
