@@ -51,7 +51,12 @@ public class Player extends Entity {
 		Vector3D look = getLookDirection();
 		Rotation lookToOrigin = new Rotation(look, Entity.FORWARD);
 		Vector3D toOther = vectorTo(e);
-		return lookToOrigin.applyTo(toOther.normalize());
+
+		if (toOther.getNormSq() == 0) {
+			return Entity.FORWARD;
+		} else {
+			return lookToOrigin.applyTo(toOther.normalize());
+		}
 	}
 
 	public boolean hitsWall(Vector3D wallTopLeft, Vector3D wallTopRight,

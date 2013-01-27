@@ -2,6 +2,7 @@ package org.ggj2013;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
@@ -16,9 +17,9 @@ public class Room {
 		ACTIVE, WON, LOST
 	}
 
-	public LinkedList<Enemy> enemies;
-	public Player player;
-	public Damsel damsel;
+	public final List<Enemy> enemies;
+	public final Player player;
+	public final Damsel damsel;
 	public Status status = Status.ACTIVE;
 	private final Game game;
 
@@ -27,16 +28,23 @@ public class Room {
 	private final Vector3D roomBottomLeft;
 	private final Vector3D roomBottomRight;
 
-	public Room(RoomConfig cfg) {
-		this.game = cfg.context;
+	public Room(Game game, RoomConfig cfg) {
+		this.game = game;
 
 		player = new Player("player");
-		player.position = cfg.playerPosition;
+
+		if (cfg.playerPosition != null) {
+			player.position = cfg.playerPosition;
+		}
 
 		damsel = new Damsel("damsel");
-		damsel.position = cfg.damselPosition;
+
+		if (cfg.damselPosition != null) {
+			damsel.position = cfg.damselPosition;
+		}
 
 		enemies = new LinkedList<Enemy>();
+
 		if (cfg.enemies != null) {
 			for (int i = 0; i < cfg.enemies.size(); i++) {
 				Map.Entry<Vector3D, Enemy.Size> e = cfg.enemies.entrySet()
@@ -189,14 +197,14 @@ public class Room {
 	// RoomConfig
 
 	public static class RoomConfig {
-		Game context;
 		Vector3D playerPosition;
 		Vector3D damselPosition;
+
 		HashMap<Vector3D, Enemy.Size> enemies;
 
-		Vector3D roomTopLeft;
-		Vector3D roomTopRight;
-		Vector3D roomBottomLeft;
-		Vector3D roomBottomRight;
+		Vector3D roomTopLeft = new Vector3D(-10, 10, 0);
+		Vector3D roomTopRight = new Vector3D(10, 10, 0);
+		Vector3D roomBottomLeft = new Vector3D(-10, -10, 0);
+		Vector3D roomBottomRight = new Vector3D(10, -10, 0);
 	}
 }

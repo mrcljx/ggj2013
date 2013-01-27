@@ -68,7 +68,7 @@ public class Game {
 		settingsBounds = null;
 		soundManager.stopAll();
 		Log.e("Start Room", "" + currentLevel);
-		currentRoom = new Room(levels.get(currentLevel - 1));
+		currentRoom = new Room(this, levels.get(currentLevel - 1));
 	}
 
 	public void onPause() {
@@ -398,7 +398,6 @@ public class Game {
 	private void createLevels() {
 		// TODO Level 1
 		RoomConfig cfg = new RoomConfig();
-		cfg.context = this;
 		cfg.playerPosition = new Vector3D(0, 0, 0);
 		cfg.damselPosition = new Vector3D(0, 3, 0);
 		cfg.roomTopLeft = new Vector3D(-10, 10, 0);
@@ -409,7 +408,6 @@ public class Game {
 
 		// TODO Level 2
 		cfg = new RoomConfig();
-		cfg.context = this;
 		cfg.playerPosition = new Vector3D(0, 0, 0);
 		cfg.damselPosition = new Vector3D(0, 10, 0);
 		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
@@ -422,7 +420,6 @@ public class Game {
 
 		// Level 3
 		cfg = new RoomConfig();
-		cfg.context = this;
 		cfg.playerPosition = new Vector3D(0, 0, 0);
 		cfg.damselPosition = new Vector3D(0, 10, 0);
 		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
