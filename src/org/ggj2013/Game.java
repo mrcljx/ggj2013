@@ -50,11 +50,17 @@ public class Game {
 	private Path arrow;
 	private final SimpleDateFormat df = new SimpleDateFormat("mm:ss:SSS");
 
+	private final long startedAt;
+
+	private double runningForSeconds;
+
 	public Game(FullscreenActivity activity, int level) {
 		this.activity = activity;
 		currentLevel = level;
 		soundManager = new SoundManager(activity.getApplicationContext());
 		soundManager.loadSoundPack(new SoundPackStandard());
+
+		startedAt = System.currentTimeMillis();
 
 		createLevels();
 
@@ -83,6 +89,7 @@ public class Game {
 
 	public void onUpdate() {
 		long now = System.nanoTime();
+		runningForSeconds = ((System.currentTimeMillis() - startedAt) * 0.001);
 
 		if (lastUpdate > 0) {
 			timeDiff = now - lastUpdate;
@@ -315,9 +322,7 @@ public class Game {
 			}
 		}
 
-		// TODO player pulse fade
-		alpha = (int) (127f + 128f * (Math
-				.sin(System.currentTimeMillis() % 1000000 * 0.001f)));
+		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds * 2)));
 		c.drawRect(c.getClipBounds(), createPaint(Color.BLACK, textsize, alpha));
 
 		Paint p = createPaint(Color.WHITE, textsize - 10, alpha);
