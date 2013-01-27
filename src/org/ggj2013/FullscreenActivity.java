@@ -8,6 +8,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
@@ -59,7 +60,13 @@ public class FullscreenActivity extends Activity implements
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		gameView = new GameView(this);
+
+		Intent intent = getIntent();
+		int level = intent.getIntExtra("level", 1);
+
+		Log.e("Start Level", "" + level);
+
+		gameView = new GameView(this, level);
 		gameView.setOnTouchListener(this);
 		setContentView(gameView);
 	}

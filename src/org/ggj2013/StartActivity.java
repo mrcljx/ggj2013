@@ -21,9 +21,11 @@ public class StartActivity extends Activity {
 		findViewById(R.id.btn_start).setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				Intent myIntent = new Intent(StartActivity.this,
-						MenuActivity.class);
-				startActivity(myIntent);
+				if (MotionEvent.ACTION_UP == event.getAction()) {
+					Intent myIntent = new Intent(StartActivity.this,
+							MenuActivity.class);
+					startActivity(myIntent);
+				}
 				return true;
 			}
 		});
