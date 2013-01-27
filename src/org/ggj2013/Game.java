@@ -324,10 +324,11 @@ public class Game {
 			}
 		}
 
-		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds * 2)));
+		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds
+				* currentRoom.player.heartbeatLevel)));
 		c.drawRect(c.getClipBounds(), createPaint(Color.BLACK, textsize, alpha));
 
-		Paint p = createPaint(Color.WHITE, textsize - 10, alpha);
+		Paint p = createPaint(Color.WHITE, textsize - 10, 255);
 		p.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
 		drawTextCentered(
 				c,
@@ -335,6 +336,10 @@ public class Game {
 				"Level " + currentLevel + " "
 						+ df.format(new Date(now - startTime)), w, centerX,
 				textsize);
+
+		// walls
+		float[] distance = currentRoom.getWallDistance(currentRoom.player);
+		// TODO wall
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -384,7 +389,8 @@ public class Game {
 	public long getHighscore(int level) {
 		SharedPreferences prefs = activity.getSharedPreferences("DarkPulse",
 				Context.MODE_PRIVATE);
-		return prefs.getLong("level-" + level, 9999999);
+		return prefs
+				.getLong("level-" + level, 999 + 59 * 1000 + 59 * 1000 * 60);
 	}
 
 	public void setHighscore(int level, long time) {

@@ -61,6 +61,23 @@ public class Room {
 		}
 	}
 
+	/**
+	 * float[0] front float[0] left float[0] right float[0] back
+	 * 
+	 * @return
+	 */
+	public float[] getWallDistance(Entity e) {
+		float[] distance = new float[4];
+
+		double x = e.position.getX();
+		double y = e.position.getY();
+
+		// MathUtils.CohenSutherlandLineClipAndDraw(x, y, x * 1000, y * 1000,
+		// xmin, ymin, xmax, ymax);
+
+		return distance;
+	}
+
 	public boolean startedSound = false;
 
 	private float ignoreMovementFor;
