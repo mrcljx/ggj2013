@@ -286,14 +286,15 @@ public class Game {
 			}
 
 			// walls
-			// c.restore();
-			// c.save();
-			// float[] distance =
-			// currentRoom.getWallDistance(currentRoom.player);
-			// c.drawRect(0, 0, w, 10 - (2 * distance[0]), gray);
-			// c.drawRect(0, 0, 10 - (2 * distance[1]), h, gray);
-			// c.drawRect(w - 10 + (2 * distance[2]), 0, w, h, gray);
-			// c.drawRect(0, h - 10 + (2 * distance[3]), w, h, gray);
+			c.restore();
+			c.save();
+
+			float[] distance = currentRoom.getWallDistance(currentRoom.player);
+
+			c.drawRect(0, 0, w, distance[0], gray);
+			c.drawRect(0, 0, distance[1], h, gray);
+			c.drawRect(w - distance[2], 0, w, h, gray);
+			c.drawRect(0, h - distance[3], w, h, gray);
 		}
 
 		if (debug) {
@@ -487,7 +488,7 @@ public class Game {
 	LinkedList<RoomConfig> levels = new LinkedList<Room.RoomConfig>();
 
 	private void createLevels() {
-		// TODO Level 1
+		// Level 1
 		RoomConfig cfg = new RoomConfig();
 		cfg.playerPosition = new Vector3D(0, 0, 0);
 		cfg.damselPosition = new Vector3D(0, 4, 0);
@@ -497,7 +498,7 @@ public class Game {
 		cfg.bottom = -2;
 		levels.add(cfg);
 
-		// TODO Level 2
+		// Level 2
 		cfg = new RoomConfig();
 		cfg.playerPosition = new Vector3D(0, 0, 0);
 		cfg.damselPosition = new Vector3D(-7, 10, 0);
@@ -523,7 +524,7 @@ public class Game {
 		cfg.bottom = -2;
 		levels.add(cfg);
 
-		// TODO Level 4
+		// Level 4
 		cfg = new RoomConfig();
 		cfg.playerPosition = new Vector3D(0, 0, 0);
 		cfg.damselPosition = new Vector3D(22, 10, 0);
@@ -531,13 +532,14 @@ public class Game {
 		cfg.enemies.put(new Vector3D(8, 5, 0), Size.MEDIUM);
 		cfg.enemies.put(new Vector3D(-1, 8, 0), Size.BIG);
 		cfg.enemies.put(new Vector3D(10, 13, 0), Size.SMALL);
+		cfg.enemies.put(new Vector3D(16, 3, 0), Size.SMALL);
 		cfg.left = -4;
 		cfg.right = 25;
 		cfg.top = 15;
 		cfg.bottom = -2;
 		levels.add(cfg);
 
-		// TODO Level 5
+		// Level 5
 		cfg = new RoomConfig();
 		cfg.playerPosition = new Vector3D(0, 0, 0);
 		cfg.damselPosition = new Vector3D(22, 28, 0);

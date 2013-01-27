@@ -68,37 +68,33 @@ public class Room {
 	 */
 	public float[] getWallDistance(Player e) {
 		float[] distance = new float[4];
-
-		double x = e.position.getX();
-		double y = e.position.getY();
-
-		Vector3D look = e.getLookDirection();
-		Rotation lookToOrigin = new Rotation(look, Entity.FORWARD);
-
-		double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(x, y, x,
-				y * 1000, roomLeft, roomTop, roomRight, roomBottom);
-
-		distance[0] = 1;
-		distance[1] = 2;
-		distance[2] = 3;
-		distance[3] = 4;
-
+		distance[0] = distance(Vector3D.PLUS_J);
+		distance[1] = distance(Vector3D.MINUS_I);
+		distance[2] = distance(Vector3D.PLUS_I);
+		distance[3] = distance(Vector3D.MINUS_J);
 		return distance;
 	}
 
-	private float distance(Vector3D position) {
+	private float distance(Vector3D direction) {
 
-		// double x = position.getX();
-		// double y = position.getY();
-		//
-		// Vector3D look = e.getLookDirection();
-		// Rotation lookToOrigin = new Rotation(look, Entity.FORWARD);
-		//
-		// double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(x, y, x,
-		// y*1000,
-		// roomLeft,roomTop,roomRight,roomBottom);
+		Vector3D pos = player.position;
+		Vector3D look = player.getLookDirection();
+		Rotation rot = new Rotation(look, Entity.FORWARD);
 
-		return 0;
+		Vector3D dir = rot.applyInverseTo(direction);
+		Vector3D other = pos.add(dir.scalarMultiply(100));
+
+		double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(pos.getX(),
+				pos.getY(), other.getX(), other.getY(), roomLeft, roomBottom,
+				roomRight, roomTop);
+
+		if (clip != null) {
+			Vector3D hit = new Vector3D(clip[2], clip[3], 0);
+			float dist = (float) hit.subtract(pos).getNorm() - player.size;
+			return Math.round(MathUtils.lerp(dist, 1, 3, 4, 0));
+		} else {
+			return 0;
+		}
 	}
 
 	public boolean startedSound = false;
