@@ -39,9 +39,12 @@ public class MenuActivity extends Activity {
 		findViewById(R.id.btn_lvl3).setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				Intent myIntent = new Intent(MenuActivity.this,
-						FullscreenActivity.class);
-				startActivity(myIntent);
+				if (MotionEvent.ACTION_UP == event.getAction()) {
+					Intent intent = new Intent(MenuActivity.this,
+							FullscreenActivity.class);
+					intent.putExtra("level", 3);
+					startActivity(intent);
+				}
 				return true;
 			}
 		});

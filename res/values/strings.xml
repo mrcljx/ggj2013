@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">Dark Pulse</string>
-    <string name="title_activity_start">StartActivity</string>
-    <string name="title_activity_menu">Menu</string>
+    <string name="title_activity_start">Dark Pulse</string>
+    <string name="title_activity_menu">Dark Pulse</string>
     <string name="btn_start">START</string>
     <string name="btn_lvl1">LEVEL 1</string>
     <string name="btn_lvl2">LEVEL 2</string>

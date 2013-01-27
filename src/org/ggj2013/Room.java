@@ -1,10 +1,11 @@
 package org.ggj2013;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.ggj2013.Enemy.Size;
 import org.ggj2013.FullscreenActivity.Movement;
 
 import android.graphics.Canvas;
@@ -23,26 +24,33 @@ public class Room {
 	public Status status = Status.ACTIVE;
 	private final Game context;
 
-	public Room(Game context) {
-		this.context = context;
+	private final Vector3D roomTopLeft;
+	private final Vector3D roomTopRight;
+	private final Vector3D roomBottomLeft;
+	private final Vector3D roomBottomRight;
+
+	public Room(RoomConfig cfg) {
+		this.context = cfg.context;
 
 		player = new Player("player");
+		player.position = cfg.playerPosition;
 
 		damsel = new Damsel("damsel");
-		damsel.position = player.position.add(new Vector3D(0, 10, 0));
+		damsel.position = cfg.damselPosition;
+
 		enemies = new LinkedList<Enemy>();
+		for (int i = 0; i < cfg.enemies.size(); i++) {
+			Map.Entry<Vector3D, Enemy.Size> e = cfg.enemies.entrySet()
+					.iterator().next();
+			Enemy enemy = new Enemy("enemy-" + i, e.getValue());
+			enemy.position = e.getKey();
+			enemies.add(enemy);
+		}
 
-		Enemy enemy = new Enemy("enemy-1", Size.MEDIUM);
-		enemy.position = new Vector3D(5, 5, 0);
-		enemies.add(enemy);
-
-		enemy = new Enemy("enemy-2", Size.BIG);
-		enemy.position = new Vector3D(-3, 8, 0);
-		enemies.add(enemy);
-
-		enemy = new Enemy("enemy-3", Size.SMALL);
-		enemy.position = new Vector3D(0, -3, 0);
-		enemies.add(enemy);
+		roomTopLeft = cfg.roomTopLeft;
+		roomTopRight = cfg.roomTopRight;
+		roomBottomLeft = cfg.roomBottomLeft;
+		roomBottomRight = cfg.roomBottomRight;
 	}
 
 	public boolean startedSound = false;
@@ -90,13 +98,10 @@ public class Room {
 			this.status = Status.WON;
 			onWonGame();
 			return;
-		} else if (player.hitsWall(new Vector3D(-10, 10, 0), // topLeft
-				new Vector3D(10, 10, 0), // topRight
-				new Vector3D(-10, -10, 0), // bottomLeft
-				new Vector3D(10, -10, 0) // bottomRight
-				)) {
+		} else if (player.hitsWall(roomTopLeft, roomTopRight, roomBottomLeft,
+				roomBottomRight)) {
 			Log.d("Collision", "Hits wall");
-			player.moveForward(-0.1f);
+			player.moveForward(-0.5f);
 			this.context.activity.vibrate();
 			return;
 		} else {
@@ -154,7 +159,7 @@ public class Room {
 
 	private void onWonGame() {
 		context.soundManager.stopAll();
-		context.onNextLevel();
+		context.restart();
 
 		context.activity.runOnUiThread(new Runnable() {
 			@Override
@@ -166,7 +171,6 @@ public class Room {
 	}
 
 	private void onLostGame(Entity e) {
-		context.soundManager.stopAll();
 		context.restart();
 
 		context.activity.runOnUiThread(new Runnable() {
@@ -180,5 +184,17 @@ public class Room {
 
 	public void onRender(Canvas c) {
 		// Whoa! Fancy graphics... not! :-P
+	}
+
+	public static class RoomConfig {
+		Game context;
+		Vector3D playerPosition;
+		Vector3D damselPosition;
+		HashMap<Vector3D, Enemy.Size> enemies;
+
+		Vector3D roomTopLeft;
+		Vector3D roomTopRight;
+		Vector3D roomBottomLeft;
+		Vector3D roomBottomRight;
 	}
 }

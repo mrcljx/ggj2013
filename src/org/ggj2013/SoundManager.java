@@ -78,8 +78,9 @@ public class SoundManager {
 	public void changeVolume(String streamIdent, float[] balance,
 			float masterVolume) {
 
-		streams.get(streamIdent).setVolume(masterVolume * balance[0],
-				masterVolume * balance[1]);
+		MediaPlayer mp = streams.get(streamIdent);
+		if (mp != null)
+			mp.setVolume(masterVolume * balance[0], masterVolume * balance[1]);
 	}
 
 	public void stopAll() {

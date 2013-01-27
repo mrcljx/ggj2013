@@ -1,6 +1,11 @@
 package org.ggj2013;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.ggj2013.Enemy.Size;
+import org.ggj2013.Room.RoomConfig;
 
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
@@ -20,7 +25,7 @@ public class Game {
 	private long timeDiff = 2000000; // 2ms
 	private long lastUpdate = -1;
 	private Room currentRoom;
-	private int currentLevel;
+	private final int currentLevel;
 	public final FullscreenActivity activity;
 	public SoundManager soundManager;
 
@@ -29,19 +34,21 @@ public class Game {
 
 	private Path arrow;
 
-	public Game(FullscreenActivity activity) {
+	public Game(FullscreenActivity activity, int level) {
 		this.activity = activity;
+		currentLevel = level;
 		soundManager = new SoundManager(activity.getApplicationContext());
 		soundManager.loadSoundPack(new SoundPackStandard());
-		restart();
 
+		createLevels();
+
+		restart();
 	}
 
 	public void restart() {
-		currentRoom = null;
-		currentLevel = 0;
 		soundManager.stopAll();
-		onNextLevel();
+		Log.e("Start Room", "" + currentLevel);
+		currentRoom = new Room(levels.get(currentLevel - 1));
 	}
 
 	public void onPause() {
@@ -50,17 +57,6 @@ public class Game {
 
 	public void onResume() {
 		soundManager.autoResume();
-	}
-
-	public void onNextLevel() {
-		currentLevel++;
-
-		if (currentLevel == 10) {
-			currentRoom = null;
-			Log.e("GAME", "WON!");
-		} else {
-			currentRoom = new Room(this);
-		}
 	}
 
 	public void onUpdate() {
@@ -142,7 +138,7 @@ public class Game {
 			c.drawText("R", left + textsize / 2, top + textsize * 2, white);
 		}
 
-		if (currentRoom != null) {
+		if (currentRoom != null && currentRoom.player != null) {
 			// enemies
 			for (int i = 0; i < currentRoom.enemies.size(); i++) {
 				Enemy e = currentRoom.enemies.get(i);
@@ -235,5 +231,43 @@ public class Game {
 		// p.setAntiAlias(true);
 		p.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 		return p;
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// Levels
+
+	LinkedList<RoomConfig> levels = new LinkedList<Room.RoomConfig>();
+
+	private void createLevels() {
+		// TODO Level 1
+		RoomConfig cfg = new RoomConfig();
+		levels.add(cfg);
+
+		// TODO Level 2
+		cfg = new RoomConfig();
+		levels.add(cfg);
+
+		// Level 3
+		cfg = new RoomConfig();
+		cfg.context = this;
+		cfg.playerPosition = new Vector3D(0, 0, 0);
+		cfg.damselPosition = new Vector3D(0, 10, 0);
+		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
+		cfg.enemies.put(new Vector3D(5, 5, 0), Size.MEDIUM);
+		cfg.enemies.put(new Vector3D(-3, 8, 0), Size.BIG);
+		cfg.enemies.put(new Vector3D(0, -3, 0), Size.SMALL);
+		cfg.roomTopLeft = new Vector3D(-10, 10, 0);
+		cfg.roomTopRight = new Vector3D(10, 10, 0);
+		cfg.roomBottomLeft = new Vector3D(-10, -10, 0);
+		cfg.roomBottomRight = new Vector3D(10, -10, 0);
+		levels.add(cfg);
+
+		// TODO Level 4
+		cfg = new RoomConfig();
+		levels.add(cfg);
+
+		// TODO Level 5
+		cfg = new RoomConfig();
+		levels.add(cfg);
 	}
 }

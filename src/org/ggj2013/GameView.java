@@ -12,13 +12,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	private final FullscreenActivity context;
 	public final Game game;
 
-	public GameView(FullscreenActivity context) {
+	public GameView(FullscreenActivity context, int level) {
 		super(context);
 		getHolder().addCallback(this);
 		this.context = context;
 
 		// create the game loop thread
-		this.game = new Game(context);
+		this.game = new Game(context, level);
 		thread = new MainThread(context, getHolder(), this, game);
 
 		setFocusable(true);
