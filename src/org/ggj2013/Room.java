@@ -133,13 +133,13 @@ public class Room {
 			}
 
 			int newHeartbeatLevel;
-			if (minDistance > 5) {
+			if (minDistance > 7) {
 				newHeartbeatLevel = 1;
-			} else if (minDistance > 4) {
+			} else if (minDistance > 5) {
 				newHeartbeatLevel = 2;
-			} else if (minDistance > 3) {
+			} else if (minDistance > 4) {
 				newHeartbeatLevel = 3;
-			} else if (minDistance > 2) {
+			} else if (minDistance > 3) {
 				newHeartbeatLevel = 4;
 			} else {
 				newHeartbeatLevel = 5;
