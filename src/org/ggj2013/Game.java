@@ -26,7 +26,7 @@ import android.util.Log;
 
 public class Game {
 
-	private final boolean debug = false;
+	private final boolean debug = true;
 	public boolean isCalibrated = false;
 	public boolean isWon = false;
 	public boolean isLost = false;
@@ -399,12 +399,12 @@ public class Game {
 		// TODO Level 1
 		RoomConfig cfg = new RoomConfig();
 		cfg.context = this;
-		cfg.playerPosition = new Vector3D(0, 0, 0);
-		cfg.damselPosition = new Vector3D(0, 3, 0);
-		cfg.roomTopLeft = new Vector3D(-10, 10, 0);
-		cfg.roomTopRight = new Vector3D(10, 10, 0);
-		cfg.roomBottomLeft = new Vector3D(-10, -10, 0);
-		cfg.roomBottomRight = new Vector3D(10, -10, 0);
+		cfg.playerPosition = new Vector3D(0, 2, 0);
+		cfg.damselPosition = new Vector3D(3, 6, 0);
+		cfg.roomTopLeft = new Vector3D(-10, 20, 0);
+		cfg.roomTopRight = new Vector3D(10, 20, 0);
+		cfg.roomBottomLeft = new Vector3D(-10, 0, 0);
+		cfg.roomBottomRight = new Vector3D(10, 0, 0);
 		levels.add(cfg);
 
 		// TODO Level 2
@@ -414,10 +414,10 @@ public class Game {
 		cfg.damselPosition = new Vector3D(0, 10, 0);
 		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
 		cfg.enemies.put(new Vector3D(0, 5, 0), Size.SMALL);
-		cfg.roomTopLeft = new Vector3D(-10, 10, 0);
-		cfg.roomTopRight = new Vector3D(10, 10, 0);
-		cfg.roomBottomLeft = new Vector3D(-10, -10, 0);
-		cfg.roomBottomRight = new Vector3D(10, -10, 0);
+		cfg.roomTopLeft = new Vector3D(-10, 20, 0);
+		cfg.roomTopRight = new Vector3D(10, 20, 0);
+		cfg.roomBottomLeft = new Vector3D(-10, 0, 0);
+		cfg.roomBottomRight = new Vector3D(10, 0, 0);
 		levels.add(cfg);
 
 		// Level 3
@@ -429,10 +429,10 @@ public class Game {
 		cfg.enemies.put(new Vector3D(5, 5, 0), Size.MEDIUM);
 		cfg.enemies.put(new Vector3D(-3, 8, 0), Size.BIG);
 		cfg.enemies.put(new Vector3D(0, -3, 0), Size.SMALL);
-		cfg.roomTopLeft = new Vector3D(-10, 10, 0);
-		cfg.roomTopRight = new Vector3D(10, 10, 0);
-		cfg.roomBottomLeft = new Vector3D(-10, -10, 0);
-		cfg.roomBottomRight = new Vector3D(10, -10, 0);
+		cfg.roomTopLeft = new Vector3D(-10, 20, 0);
+		cfg.roomTopRight = new Vector3D(10, 20, 0);
+		cfg.roomBottomLeft = new Vector3D(-10, 0, 0);
+		cfg.roomBottomRight = new Vector3D(10, 0, 0);
 		levels.add(cfg);
 
 		// TODO Level 4
