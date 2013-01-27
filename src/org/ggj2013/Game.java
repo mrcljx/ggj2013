@@ -528,6 +528,7 @@ public class Game {
 		cfg.enemies.put(new Vector3D(8, 5, 0), Size.MEDIUM);
 		cfg.enemies.put(new Vector3D(-1, 8, 0), Size.BIG);
 		cfg.enemies.put(new Vector3D(10, 13, 0), Size.SMALL);
+		cfg.enemies.put(new Vector3D(16, 3, 0), Size.SMALL);
 		cfg.left = -4;
 		cfg.right = 25;
 		cfg.top = 15;
