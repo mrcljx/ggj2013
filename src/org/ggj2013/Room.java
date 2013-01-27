@@ -90,8 +90,8 @@ public class Room {
 
 		if (clip != null) {
 			Vector3D hit = new Vector3D(clip[2], clip[3], 0);
-			float dist = (float) hit.subtract(pos).getNorm();
-			return Math.round(MathUtils.lerp(dist, 0, 10, 4, 0));
+			float dist = (float) hit.subtract(pos).getNorm() - player.size;
+			return Math.round(MathUtils.lerp(dist, 1, 3, 4, 0));
 		} else {
 			return 0;
 		}
