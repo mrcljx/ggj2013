@@ -215,6 +215,7 @@ public class FullscreenActivity extends Activity implements
 				&& gameView.game.settingsBounds.contains((int) event.getX(),
 						(int) event.getY())) {
 			orientationOffset = _lastOrientation;
+			gameView.game.isCalibrated = true;
 		} else if (gameView.game.resetBounds != null
 				&& gameView.game.resetBounds.contains((int) event.getX(),
 						(int) event.getY())) {

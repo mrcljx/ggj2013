@@ -20,7 +20,9 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 public class Game {
+
 	boolean debug = true;
+	boolean isCalibrated = false;
 
 	private long timeDiff = 2000000; // 2ms
 	private long lastUpdate = -1;
@@ -116,6 +118,27 @@ public class Game {
 		// bg
 		c.drawRect(c.getClipBounds(), black);
 
+		if (!isCalibrated) {
+			float yy = centerY - 5 * textsize;
+			drawTextCentered(c, red, "MAKE SHURE TO", w, centerX, yy);
+			drawTextCentered(c, red, "HAVE FREE SPACE", w, centerX, yy
+					+ textsize);
+			drawTextCentered(c, red, "IN FRONT OF YOU.", w, centerX, yy + 2
+					* textsize);
+
+			int left = centerX - w / 4;
+			int top = (int) (yy + 4 * textsize - 20);
+			int right = centerX + w / 4;
+			int bottom = (int) (yy + 7 * textsize);
+			settingsBounds = new Rect(left, top, right, bottom);
+			c.drawRect(settingsBounds, white);
+			c.drawRect(new Rect(left + 4, top + 4, right - 4, bottom - 4),
+					black);
+			drawTextCentered(c, white, "OK", w, centerX, yy + 6 * textsize);
+
+			return;
+		}
+
 		if (debug) {
 			// debug
 			c.drawText(String.format("x: %.2f / y: %.2f",
@@ -173,7 +196,7 @@ public class Game {
 				c.rotate(-currentRoom.player.orientation);
 				c.drawCircle(0, 0, (w / 2) - 20, white);
 				c.drawCircle(0, 0, (w / 2) - 30, black);
-				c.drawText("N", 0, -(w / 2) + 20, white);
+				c.drawCircle(0, -(w / 2) + 20, 10, white);
 			}
 
 			// direction
@@ -231,6 +254,13 @@ public class Game {
 		// p.setAntiAlias(true);
 		p.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 		return p;
+	}
+
+	private void drawTextCentered(Canvas c, Paint paint, String text, float w,
+			float centerX, float y) {
+		// int length = paint.breakText(text, true, w, null);
+		paint.setTextAlign(Paint.Align.CENTER);
+		c.drawText(text, centerX, y, paint);
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
