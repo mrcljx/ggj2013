@@ -29,7 +29,7 @@ public class Game {
 
 	public static final String TAG = Game.class.getSimpleName();
 
-	private final boolean debug = true;
+	private final boolean debug = false;
 
 	public boolean isCalibrated = false;
 	public boolean isWon = false;
@@ -247,11 +247,6 @@ public class Game {
 		}
 
 		if (debug) {
-			// debug
-			c.drawText(String.format("x: %.2f / y: %.2f",
-					currentRoom.player.position.getX(),
-					currentRoom.player.position.getY()), centerX, 80, green);
-
 			// settings
 			int left = w - (h / 10);
 			int top = h - (h / 10);
@@ -269,6 +264,13 @@ public class Game {
 		}
 
 		if (currentRoom != null && currentRoom.player != null) {
+			if (debug) {
+				// player position
+				c.drawText(String.format("x: %.2f / y: %.2f",
+						currentRoom.player.position.getX(),
+						currentRoom.player.position.getY()), centerX, 80, green);
+			}
+
 			// enemies
 			for (int i = 0; i < currentRoom.enemies.size(); i++) {
 				Enemy e = currentRoom.enemies.get(i);
@@ -322,8 +324,19 @@ public class Game {
 						currentRoom.player.distanceTo(currentRoom.damsel)),
 						centerX - textsize, centerY - textsize, green);
 			}
+
+			// walls
+			c.restore();
+			c.save();
+			float[] distance = currentRoom.getWallDistance(currentRoom.player);
+			c.drawRect(0, 0, w, 10 - (2 * distance[0]), gray);
+			c.drawRect(0, 0, 10 - (2 * distance[1]), h, gray);
+			c.drawRect(w - 10 + (2 * distance[2]), 0, w, h, gray);
+			c.drawRect(0, h - 10 + (2 * distance[3]), w, h, gray);
 		}
 
+		c.restore();
+		c.save();
 		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds
 				* currentRoom.player.heartbeatLevel)));
 		c.drawRect(c.getClipBounds(), createPaint(Color.BLACK, textsize, alpha));
@@ -334,12 +347,8 @@ public class Game {
 				c,
 				p,
 				"Level " + currentLevel + " "
-						+ df.format(new Date(now - startTime)), w, centerX,
-				textsize);
-
-		// walls
-		float[] distance = currentRoom.getWallDistance(currentRoom.player);
-		// TODO wall
+						+ df.format(new Date(now - startTime)), w, centerX, h
+						- textsize);
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

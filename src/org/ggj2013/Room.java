@@ -62,20 +62,43 @@ public class Room {
 	}
 
 	/**
-	 * float[0] front float[0] left float[0] right float[0] back
+	 * float[0] front float[1] left float[2] right float[3] back
 	 * 
 	 * @return
 	 */
-	public float[] getWallDistance(Entity e) {
+	public float[] getWallDistance(Player e) {
 		float[] distance = new float[4];
 
 		double x = e.position.getX();
 		double y = e.position.getY();
 
-		// MathUtils.CohenSutherlandLineClipAndDraw(x, y, x * 1000, y * 1000,
-		// xmin, ymin, xmax, ymax);
+		Vector3D look = e.getLookDirection();
+		Rotation lookToOrigin = new Rotation(look, Entity.FORWARD);
+
+		double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(x, y, x,
+				y * 1000, roomLeft, roomTop, roomRight, roomBottom);
+
+		distance[0] = 1;
+		distance[1] = 2;
+		distance[2] = 3;
+		distance[3] = 4;
 
 		return distance;
+	}
+
+	private float distance(Vector3D position) {
+
+		// double x = position.getX();
+		// double y = position.getY();
+		//
+		// Vector3D look = e.getLookDirection();
+		// Rotation lookToOrigin = new Rotation(look, Entity.FORWARD);
+		//
+		// double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(x, y, x,
+		// y*1000,
+		// roomLeft,roomTop,roomRight,roomBottom);
+
+		return 0;
 	}
 
 	public boolean startedSound = false;
