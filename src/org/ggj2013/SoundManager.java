@@ -109,9 +109,16 @@ public class SoundManager {
 			float masterVolume) {
 
 		MediaPlayer mp = streams.get(streamIdent);
-		if (mp != null && streamActive.containsKey(streamIdent)
-				&& streamActive.get(streamIdent) == true)
+		if (balance[0] == 0 && balance[1] == 0) {
+			masterVolume = 0;
+		}
+
+		try {
 			mp.setVolume(masterVolume * balance[0], masterVolume * balance[1]);
+		} catch (Exception e) {
+			Log.d("changeVolume", "change volume failed");
+		}
+
 	}
 
 	public void stopAll() {
