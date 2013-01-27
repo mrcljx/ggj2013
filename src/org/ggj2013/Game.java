@@ -288,11 +288,13 @@ public class Game {
 			// walls
 			c.restore();
 			c.save();
+
 			float[] distance = currentRoom.getWallDistance(currentRoom.player);
-			c.drawRect(0, 0, w, 10 - (2 * distance[0]), gray);
-			c.drawRect(0, 0, 10 - (2 * distance[1]), h, gray);
-			c.drawRect(w - 10 + (2 * distance[2]), 0, w, h, gray);
-			c.drawRect(0, h - 10 + (2 * distance[3]), w, h, gray);
+
+			c.drawRect(0, 0, w, distance[0], gray);
+			c.drawRect(0, 0, distance[1], h, gray);
+			c.drawRect(w - distance[2], 0, w, h, gray);
+			c.drawRect(0, h - distance[3], w, h, gray);
 		}
 
 		if (debug) {
