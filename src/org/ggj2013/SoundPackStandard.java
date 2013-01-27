@@ -7,7 +7,9 @@ public class SoundPackStandard extends SoundPack {
 	public static final String BEAT = "BEAT";
 	public static final String BREATH = "BREATH";
 
-	public static final String GOAL = "GOAL";
+	public static final String DAMSEL = "DAMSEL";
+	public static final String VICTORY = "VICTORY";
+	public static final String KILLED_BY_ENEMY = "KILLED_BY_ENEMY";
 
 	public static final String ENEMY_BIG = "ENEMY_BIG";
 	public static final String ENEMY_MEDIUM = "ENEMY_MEDIUM";
@@ -34,7 +36,9 @@ public class SoundPackStandard extends SoundPack {
 		sounds.put(SoundPackStandard.ENEMY_MEDIUM, R.raw.enemy_medium);
 		sounds.put(SoundPackStandard.ENEMY_SMALL, R.raw.enemy_small);
 
-		sounds.put(SoundPackStandard.GOAL, R.raw.ziel_neu_02);
+		sounds.put(SoundPackStandard.DAMSEL, R.raw.damsel);
+		sounds.put(SoundPackStandard.VICTORY, R.raw.victory);
+		sounds.put(SoundPackStandard.KILLED_BY_ENEMY, R.raw.killed_by_enemy);
 
 		return sounds;
 	}
