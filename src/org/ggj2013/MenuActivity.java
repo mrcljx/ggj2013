@@ -94,14 +94,15 @@ public class MenuActivity extends Activity {
 
 	public void setButtonText(int id, int level) {
 		Button b = (Button) findViewById(id);
-		b.setText("LEVEL " + level + " "
-				+ df.format(new Date(getHighscore(level))));
+		b.setText("LEVEL " + level + " ("
+				+ df.format(new Date(getHighscore(level))) + ")");
 	}
 
 	public long getHighscore(int level) {
 		SharedPreferences prefs = this.getSharedPreferences("DarkPulse",
 				Context.MODE_PRIVATE);
-		return prefs.getLong("level-" + level, 9999999);
+		return prefs
+				.getLong("level-" + level, 999 + 59 * 1000 + 59 * 1000 * 60);
 	}
 
 	public void setHighscore(int level, long time) {
