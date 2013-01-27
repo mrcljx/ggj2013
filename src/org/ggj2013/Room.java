@@ -59,7 +59,7 @@ public class Room {
 		if (!startedSound) {
 			startedSound = true;
 
-			context.soundManager.play(damsel.name, SoundPackStandard.GOAL,
+			context.soundManager.play(damsel.name, SoundPackStandard.DAMSEL,
 					SoundManager.BALANCE_CENTER, 1f,
 					SoundManager.LOOPS_INFINITE);
 
@@ -166,11 +166,16 @@ public class Room {
 			public void run() {
 				Toast.makeText(context.activity, "WON!", Toast.LENGTH_LONG)
 						.show();
+
+				context.soundManager.play("victory", SoundPackStandard.VICTORY,
+						SoundManager.BALANCE_CENTER, 1f, SoundManager.LOOPS_0);
+
 			}
 		});
 	}
 
 	private void onLostGame(Entity e) {
+		context.soundManager.stopAll();
 		context.restart();
 
 		context.activity.runOnUiThread(new Runnable() {
@@ -178,6 +183,11 @@ public class Room {
 			public void run() {
 				Toast.makeText(context.activity, "LOST!", Toast.LENGTH_LONG)
 						.show();
+
+				context.soundManager.play("killed_by_enemy",
+						SoundPackStandard.KILLED_BY_ENEMY,
+						SoundManager.BALANCE_CENTER, 1f, SoundManager.LOOPS_0);
+
 			}
 		});
 	}
