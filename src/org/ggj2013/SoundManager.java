@@ -6,6 +6,7 @@ import java.util.Map;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnInfoListener;
 import android.util.Log;
 
 public class SoundManager {
@@ -50,6 +51,18 @@ public class SoundManager {
 						"Mediaplayer caused error (" + soundKey + "): "
 								+ Integer.toString(what) + " "
 								+ Integer.toString(extra));
+				return true;
+			}
+		});
+
+		mediaPlayer.setOnInfoListener(new OnInfoListener() {
+
+			@Override
+			public boolean onInfo(MediaPlayer arg0, int arg1, int arg2) {
+				Log.i("SoundManager",
+						"Mediaplayer caused error (" + soundKey + "): "
+								+ Integer.toString(arg1) + " "
+								+ Integer.toString(arg2));
 				return true;
 			}
 		});
