@@ -26,7 +26,7 @@ import android.util.Log;
 
 public class Game {
 
-	public static final String TAG = FullscreenActivity.class.getSimpleName();
+	public static final String TAG = Game.class.getSimpleName();
 
 	private final boolean debug = false;
 	public boolean isCalibrated = false;

@@ -17,7 +17,7 @@ public class Room {
 		ACTIVE, WON, LOST
 	}
 
-	public static final String TAG = FullscreenActivity.class.getSimpleName();
+	public static final String TAG = Room.class.getSimpleName();
 
 	public final List<Enemy> enemies = new LinkedList<Enemy>();
 	public final Player player;
