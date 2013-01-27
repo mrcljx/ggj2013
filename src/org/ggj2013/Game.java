@@ -31,7 +31,7 @@ public class Game {
 
 	public static final String TAG = Game.class.getSimpleName();
 
-	private final boolean debug = true;
+	private final boolean debug = false;
 
 	public boolean isCalibrated = false;
 	public boolean isWon = false;
@@ -161,7 +161,7 @@ public class Game {
 
 		if (!isCalibrated) {
 			float yy = centerY - 5 * textsize;
-			drawTextCentered(c, red, "MAKE SHURE TO", w, centerX, yy);
+			drawTextCentered(c, red, "MAKE SURE TO", w, centerX, yy);
 			yy += textsize;
 			drawTextCentered(c, red, "HAVE FREE SPACE", w, centerX, yy);
 			yy += textsize;
@@ -259,6 +259,12 @@ public class Game {
 		}
 
 		if (currentRoom != null && currentRoom.player != null) {
+			if (debug) {
+				// player position
+				c.drawText(String.format("x: %.2f / y: %.2f",
+						currentRoom.player.position.getX(),
+						currentRoom.player.position.getY()), centerX, 80, green);
+			}
 
 			// renderDamsel(c);
 
@@ -278,6 +284,15 @@ public class Game {
 						currentRoom.player.distanceTo(currentRoom.damsel)),
 						centerX - textsize, centerY - textsize, green);
 			}
+
+			// walls
+			c.restore();
+			c.save();
+			float[] distance = currentRoom.getWallDistance(currentRoom.player);
+			c.drawRect(0, 0, w, 10 - (2 * distance[0]), gray);
+			c.drawRect(0, 0, 10 - (2 * distance[1]), h, gray);
+			c.drawRect(w - 10 + (2 * distance[2]), 0, w, h, gray);
+			c.drawRect(0, h - 10 + (2 * distance[3]), w, h, gray);
 		}
 
 		if (debug) {
@@ -290,12 +305,8 @@ public class Game {
 				c,
 				p,
 				"Level " + currentLevel + " "
-						+ df.format(new Date(now - startTime)), w, centerX,
-				textsize);
-
-		// walls
-		float[] distance = currentRoom.getWallDistance(currentRoom.player);
-		// TODO wall
+						+ df.format(new Date(now - startTime)), w, centerX, h
+						- textsize);
 	}
 
 	private void renderDebugButtons(Canvas c, float textsize, Paint red,
