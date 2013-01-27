@@ -407,10 +407,10 @@ public class Game {
 	private void createLevels() {
 		// TODO Level 1
 		RoomConfig cfg = new RoomConfig();
-		cfg.playerPosition = new Vector3D(0, 2, 0);
-		cfg.damselPosition = new Vector3D(3, 6, 0);
+		cfg.playerPosition = new Vector3D(0, 0, 0);
+		cfg.damselPosition = new Vector3D(0, 3, 0);
 		cfg.left = -4;
-		cfg.right = 5;
+		cfg.right = 4;
 		cfg.top = 5;
 		cfg.bottom = -2;
 		levels.add(cfg);
