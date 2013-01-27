@@ -2,6 +2,12 @@ package org.ggj2013;
 
 public class MathUtils {
 	public static float clamp(float v, float min, float max) {
+		if (max < min) {
+			float t = max;
+			max = min;
+			min = t;
+		}
+
 		return Math.min(max, Math.max(min, v));
 	}
 
