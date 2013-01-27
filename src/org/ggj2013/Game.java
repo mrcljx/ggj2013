@@ -12,6 +12,8 @@ import org.ggj2013.Room.RoomConfig;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
@@ -56,6 +58,16 @@ public class Game {
 
 	private double runningForSeconds;
 
+	private final Bitmap glowBitmap;
+
+	private int centerY;
+
+	private int centerX;
+
+	private int screenWidth;
+
+	private int screenHeight;
+
 	public Game(FullscreenActivity activity, int level) {
 		this.activity = activity;
 		currentLevel = level;
@@ -67,6 +79,9 @@ public class Game {
 		createLevels();
 
 		restart();
+
+		glowBitmap = BitmapFactory.decodeResource(activity.getResources(),
+				R.drawable.glow);
 	}
 
 	public void restart() {
@@ -116,10 +131,6 @@ public class Game {
 		int alpha = 255;
 
 		Paint red = createPaint(Color.RED, textsize, alpha);
-		Paint redinnerglow = createPaint(Color.RED, textsize, alpha);
-		redinnerglow.setMaskFilter(new BlurMaskFilter(100, Blur.INNER));
-		Paint redouterglow = createPaint(Color.RED, textsize, alpha);
-		redouterglow.setMaskFilter(new BlurMaskFilter(100, Blur.OUTER));
 		Paint white = createPaint(Color.WHITE, textsize * 2, alpha);
 		Paint gray = createPaint(Color.DKGRAY, textsize * 2, alpha);
 		Paint black = createPaint(Color.BLACK, textsize, alpha);
@@ -139,8 +150,10 @@ public class Game {
 			arrow.close();
 		}
 
-		int centerX = c.getClipBounds().centerX();
-		int centerY = c.getClipBounds().centerY();
+		centerX = c.getClipBounds().centerX();
+		centerY = c.getClipBounds().centerY();
+		screenWidth = c.getWidth();
+		screenHeight = c.getHeight();
 
 		c.save();
 
@@ -271,55 +284,21 @@ public class Game {
 						currentRoom.player.position.getY()), centerX, 80, green);
 			}
 
-			// enemies
-			for (int i = 0; i < currentRoom.enemies.size(); i++) {
-				Enemy e = currentRoom.enemies.get(i);
-				if (debug) {
-					c.restore();
-					c.save();
-					float x = centerX
-							+ ((w / 5) * (i - currentRoom.enemies.size() + 2));
-					float y = centerY - (w / 5);
-					c.translate(x, y);
-					c.rotate(90f - (float) Math.toDegrees(currentRoom.player
-							.relativeOrientationFor(e).getAlpha()));
-					c.drawPath(arrow, yellow);
-					c.restore();
-					c.save();
-					double distance = currentRoom.player.distanceTo(e);
-					c.drawText(String.format("%.1f", distance), x - textsize, y
-							- textsize, yellow);
-				}
-
-				paintGlow(c, e, centerX, centerY, w, h, 5, redinnerglow,
-						redouterglow);
-			}
-
-			// damsel
-			// paintGlow(c, currentRoom.damsel, centerX, centerY, w, h, 2,
-			// greeninnerglow, greenouterglow);
+			// renderDamsel(c);
 
 			if (debug) {
-				// compass
-				c.translate(centerX, centerY);
-				c.rotate(-currentRoom.player.orientation);
-				c.drawCircle(0, 0, (w / 2) - 20, white);
-				c.drawCircle(0, 0, (w / 2) - 30, black);
-				c.drawCircle(0, -(w / 2) + 20, 10, white);
+				renderDebugCompass(c);
+				renderDebugEnemies(c, textsize, yellow);
 			}
 
-			// direction
-			c.restore();
-			c.save();
-			c.translate(centerX, centerY);
-			c.rotate(90f - (float) Math.toDegrees(currentRoom.player
-					.relativeOrientationFor(currentRoom.damsel).getAlpha()));
-			c.scale(5, 5);
-			c.drawPath(arrow, gray);
+			renderEnemies(c);
+			renderDirection(c, gray);
 
 			if (debug) {
-				c.restore();
-				c.save();
+				c.drawText(String.format("x: %.2f / y: %.2f",
+						currentRoom.player.position.getX(),
+						currentRoom.player.position.getY()), centerX, 80, green);
+
 				c.drawText(String.format("%.1f",
 						currentRoom.player.distanceTo(currentRoom.damsel)),
 						centerX - textsize, centerY - textsize, green);
@@ -351,26 +330,102 @@ public class Game {
 						- textsize);
 	}
 
+	private void renderDamsel(Canvas c) {
+		drawGlow(c, currentRoom.damsel, centerX, centerY, screenWidth,
+				screenHeight, 2);
+	}
+
+	private void renderDirection(Canvas c, Paint gray) {
+		// direction
+		c.save();
+		c.translate(centerX, centerY);
+		c.rotate(90f - (float) Math.toDegrees(currentRoom.player
+				.relativeOrientationFor(currentRoom.damsel).getAlpha()));
+		c.scale(5, 5);
+		c.drawPath(arrow, gray);
+		c.restore();
+	}
+
+	private void renderEnemies(Canvas c) {
+		for (Enemy e : currentRoom.enemies) {
+			drawGlow(c, e, centerX, centerY, screenWidth, screenHeight, 5);
+		}
+	}
+
+	private void renderDebugEnemies(Canvas c, float textsize, Paint yellow) {
+		int enemyIndex = 0;
+		for (Enemy e : currentRoom.enemies) {
+			c.save();
+			float x = centerX
+					+ ((screenWidth / 5) * (enemyIndex++
+							- currentRoom.enemies.size() + 2));
+			float y = centerY - (screenWidth / 5);
+			c.translate(x, y);
+			c.rotate(90f - (float) Math.toDegrees(currentRoom.player
+					.relativeOrientationFor(e).getAlpha()));
+			c.drawPath(arrow, yellow);
+			c.setMatrix(new Matrix());
+			double distance = currentRoom.player.distanceTo(e);
+			c.drawText(String.format("%.1f", distance), x - textsize, y
+					- textsize, yellow);
+			c.restore();
+		}
+	}
+
+	private void renderDebugCompass(Canvas c) {
+		// compass
+		c.save();
+
+		Paint white = new Paint();
+		white.setAntiAlias(true);
+		white.setColor(Color.WHITE);
+		white.setStyle(Style.FILL);
+
+		Paint compassPaint = new Paint(white);
+		compassPaint.setStyle(Style.STROKE);
+		compassPaint.setStrokeWidth(10);
+
+		c.translate(centerX, centerY);
+		c.rotate(-currentRoom.player.orientation);
+		c.drawCircle(0, 0, (screenWidth / 2) - 20, compassPaint);
+		c.drawCircle(0, -(screenWidth / 2) + 20, 10, white);
+		c.restore();
+	}
+
 	// //////////////////////////////////////////////////////////////////////////
 	// draw helper
 
-	private void paintGlow(Canvas c, Entity e, float centerX, float centerY,
-			float w, float h, int minDistance, Paint inner, Paint outer) {
+	private void drawGlow(Canvas c, Entity e, float centerX, float centerY,
+			float w, float h, int minDistance) {
 		float distance = currentRoom.player.distanceTo(e);
+
 		if (distance < minDistance) {
+			c.save();
+			c.setMatrix(new Matrix());
+
 			Vector3D v = currentRoom.player.relativeOrientationFor(e);
 			double[] clip = MathUtils.CohenSutherlandLineClipAndDraw(centerX,
 					centerY, v.getX() * 1000 + centerX, v.getY() * 1000
 							+ centerY, 0, 0, w, h);
 			float newX = (float) clip[2];
 			float newY = h - (float) clip[3];
-			float factor = distance * minDistance;
-			newX = centerX - newX > 0 ? newX - factor : newX + factor;
-			newY = centerY - newY > 0 ? newY - factor : newY + factor;
+
+			float halfH = glowBitmap.getHeight() / 2;
+			float halfW = glowBitmap.getWidth() / 2;
+
+			float scale = MathUtils.lerp(distance, 0, minDistance, 0.5f, 0.1f);
+			float alpha = MathUtils.lerp(distance, minDistance * 0.75f,
+					minDistance, 1, 0);
+
+			c.translate(newX, newY);
+			c.scale(scale, scale);
+
+			Paint paint = new Paint();
+			paint.setAlpha(Math.round(alpha * 255f));
+			paint.setDither(true);
+			c.drawBitmap(glowBitmap, -halfW, -halfH, paint);
+
 			c.restore();
-			c.save();
-			c.drawCircle(newX, newY, 100, inner);
-			c.drawCircle(newX, newY, 100, outer);
 		}
 	}
 
