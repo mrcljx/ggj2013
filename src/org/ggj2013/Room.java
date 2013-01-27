@@ -112,6 +112,14 @@ public class Room {
 			game.soundManager.play(damsel.name, SoundPackStandard.DAMSEL,
 					SoundManager.BALANCE_CENTER, 1f,
 					SoundManager.LOOPS_INFINITE);
+			int[] suitableSeekPoints = new int[] { 0, 21000, 37000, 55000 };
+
+			int damselSeekTo = suitableSeekPoints[(int) (Math.random()
+					* (3 - 0) + 0)];
+
+			Log.d("Damsel seek", new Integer(damselSeekTo).toString());
+
+			game.soundManager.streams.get(damsel.name).seekTo(damselSeekTo);
 
 			for (Enemy e : enemies) {
 				game.soundManager.play(e.name, e.getSoundName(),
@@ -184,30 +192,12 @@ public class Room {
 			for (Enemy enemy : enemies) {
 				balance = player.getBalanceForSoundFrom(enemy);
 				game.soundManager.changeVolume(enemy.name, balance, 1);
-
-				double distance = player.distanceTo(enemy);
-				if (distance < minDistance) {
-					minDistance = distance;
-				}
+				minDistance = Math.min(minDistance, player.distanceTo(enemy));
 			}
 
-			int newHeartbeatLevel;
-			if (minDistance > 7) {
-				newHeartbeatLevel = 1;
-			} else if (minDistance > 5) {
-				newHeartbeatLevel = 2;
-			} else if (minDistance > 4) {
-				newHeartbeatLevel = 3;
-			} else if (minDistance > 3) {
-				newHeartbeatLevel = 4;
-			} else {
-				newHeartbeatLevel = 5;
-			}
-
-			if (newHeartbeatLevel != player.heartbeatLevel) {
-				player.heartbeatLevel = newHeartbeatLevel;
-				player.playHeartBeatSound(game.soundManager);
-			}
+			float newHeartbeatLevel = MathUtils.lerp((float) minDistance, 0, 7,
+					1, 0);
+			player.updateHeartbeatLevel(newHeartbeatLevel, game.soundManager);
 		}
 	}
 

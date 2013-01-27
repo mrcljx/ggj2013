@@ -139,4 +139,8 @@ public class MathUtils {
 			return null;
 		}
 	}
+
+	public static int toByte(float alpha) {
+		return Math.round(255 * clamp(alpha, 0f, 1f));
+	}
 }
