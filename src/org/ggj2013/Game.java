@@ -162,7 +162,7 @@ public class Game {
 
 		if (!isCalibrated) {
 			float yy = centerY - 5 * textsize;
-			drawTextCentered(c, red, "MAKE SHURE TO", w, centerX, yy);
+			drawTextCentered(c, red, "MAKE SURE TO", w, centerX, yy);
 			yy += textsize;
 			drawTextCentered(c, red, "HAVE FREE SPACE", w, centerX, yy);
 			yy += textsize;
