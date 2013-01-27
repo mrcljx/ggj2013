@@ -119,7 +119,7 @@ public class FullscreenActivity extends Activity implements
 
 	private final List<Float> orientations = new LinkedList<Float>();
 
-	private float _lastOrientation;
+	float _lastOrientation;
 
 	private void onCompassEvent(SensorEvent event) {
 		this.magneticField = event.values.clone();
@@ -214,23 +214,8 @@ public class FullscreenActivity extends Activity implements
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		Log.d(TAG, String.format("Finished touch at %.2f", event.getX()));
-		if (gameView.game.settingsBounds != null
-				&& gameView.game.settingsBounds.contains((int) event.getX(),
-						(int) event.getY())) {
-			gameView.game.restart();
-			orientationOffset = _lastOrientation;
-			gameView.game.isCalibrated = true;
-			gameView.game.startTime = System.currentTimeMillis();
-		} else if (gameView.game.resetBounds != null
-				&& gameView.game.resetBounds.contains((int) event.getX(),
-						(int) event.getY())) {
-			gameView.game.restart();
-		} else if (gameView.game.backBounds != null
-				&& gameView.game.backBounds.contains((int) event.getX(),
-						(int) event.getY())) {
-			gameView.game.soundManager.stopAll();
-			FullscreenActivity.this.finish();
-		}
+
+		gameView.game.onTouch(event);
 
 		return true;
 	}

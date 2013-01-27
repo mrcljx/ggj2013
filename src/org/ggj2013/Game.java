@@ -23,12 +23,13 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.view.MotionEvent;
 
 public class Game {
 
 	public static final String TAG = Game.class.getSimpleName();
 
-	private final boolean debug = false;
+	final boolean debug = false;
 	public boolean isCalibrated = false;
 	public boolean isWon = false;
 	public boolean isLost = false;
@@ -446,5 +447,23 @@ public class Game {
 		// TODO Level 5
 		cfg = new RoomConfig();
 		levels.add(cfg);
+	}
+
+	public void onTouch(MotionEvent event) {
+		if (settingsBounds != null
+				&& settingsBounds.contains((int) event.getX(),
+						(int) event.getY())) {
+			restart();
+			activity.orientationOffset = activity._lastOrientation;
+			isCalibrated = true;
+			startTime = System.currentTimeMillis();
+		} else if (resetBounds != null
+				&& resetBounds.contains((int) event.getX(), (int) event.getY())) {
+			restart();
+		} else if (backBounds != null
+				&& backBounds.contains((int) event.getX(), (int) event.getY())) {
+			soundManager.stopAll();
+			activity.finish();
+		}
 	}
 }
