@@ -3,7 +3,6 @@ package org.ggj2013;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -40,11 +39,10 @@ public class Room {
 		damsel.position = cfg.damselPosition;
 
 		if (cfg.enemies != null) {
-			for (int i = 0; i < cfg.enemies.size(); i++) {
-				Map.Entry<Vector3D, Enemy.Size> e = cfg.enemies.entrySet()
-						.iterator().next();
-				Enemy enemy = new Enemy("enemy-" + i, e.getValue());
-				enemy.position = e.getKey();
+			int i = 0;
+			for (Vector3D ePos : cfg.enemies.keySet()) {
+				Enemy enemy = new Enemy("enemy-" + i++, cfg.enemies.get(ePos));
+				enemy.position = ePos;
 				enemies.add(enemy);
 			}
 		}
