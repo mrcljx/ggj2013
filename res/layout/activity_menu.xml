@@ -12,31 +12,18 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/infoText"
+            android:id="@+id/infoText3"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center_horizontal"
-            android:text="@string/info_text"
-            android:textAllCaps="true"
-            android:textColor="@color/gray"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/infoText2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/info_text2"
+            android:text="@string/info_text3"
             android:textAllCaps="true"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btn_lvl1"
@@ -51,7 +38,7 @@
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             android:textColor="@color/white"
-            android:background="@color/gray"
+            android:background="@color/lgray"
             android:textSize="20sp" />
 
         <Button
@@ -67,7 +54,7 @@
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             android:textColor="@color/white"
-            android:background="@color/gray"
+            android:background="@color/lgray"
             android:textSize="20sp" />
 
         <Button
@@ -83,7 +70,7 @@
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             android:textColor="@color/white"
-            android:background="@color/gray"
+            android:background="@color/lgray"
             android:textSize="20sp" />
         <Button
             android:id="@+id/btn_lvl4"
@@ -98,7 +85,7 @@
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             android:textColor="@color/white"
-            android:background="@color/gray"
+            android:background="@color/lgray"
             android:textSize="20sp" />
         <Button
             android:id="@+id/btn_lvl5"
@@ -113,7 +100,7 @@
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             android:textColor="@color/white"
-            android:background="@color/gray"
+            android:background="@color/lgray"
             android:textSize="20sp" />
 
     </LinearLayout>

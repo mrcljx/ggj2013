@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="vertical" >
+
         <ImageView
             android:id="@+id/startImage"
             android:layout_width="wrap_content"
@@ -17,13 +18,15 @@
             android:layout_gravity="top|center_horizontal"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp"
+            android:layout_marginTop="40dp"
             android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:paddingBottom="0dp"
+            android:paddingTop="0dp"
+            android:scaleType="fitXY"
             android:src="@drawable/logo" />
 
+        
         <Button
             android:id="@+id/btn_start"
             android:text="@string/btn_start"
@@ -31,13 +34,55 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
+            android:layout_marginTop="40dp"
             android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             android:textColor="@color/white"
-            android:background="@color/gray"
+            android:background="@color/lgray"
             android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/infoText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/info_text"
+            android:textSize="20sp"
+            android:textAllCaps="true"
+            android:textColor="@color/gray" />
 
+        <TextView
+            android:id="@+id/infoText2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/info_text2"
+            android:textSize="20sp"
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
+        
+        <TextView
+            android:id="@+id/infoText22"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/info_text22"
+            android:textSize="20sp"
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
     </LinearLayout>
 </FrameLayout>

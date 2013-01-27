@@ -94,7 +94,7 @@ public class MenuActivity extends Activity {
 
 	public void setButtonText(int id, int level) {
 		Button b = (Button) findViewById(id);
-		b.setText("LEVEL " + level + " ("
+		b.setText("LEVEL " + level + "\n\r ("
 				+ df.format(new Date(getHighscore(level))) + ")");
 	}
 
