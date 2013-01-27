@@ -281,7 +281,7 @@ public class Game {
 			// renderDamsel(c);
 
 			if (debug) {
-				renderDebugCompass(c, white);
+				renderDebugCompass(c);
 				renderDebugEnemies(c, textsize, yellow);
 			}
 
@@ -359,16 +359,22 @@ public class Game {
 		}
 	}
 
-	private void renderDebugCompass(Canvas c, Paint white) {
+	private void renderDebugCompass(Canvas c) {
 		// compass
 		c.save();
-		c.translate(centerX, centerY);
-		c.rotate(-currentRoom.player.orientation);
+
+		Paint white = new Paint();
+		white.setAntiAlias(true);
+		white.setColor(Color.WHITE);
+		white.setStyle(Style.FILL);
+
 		Paint compassPaint = new Paint(white);
 		compassPaint.setStyle(Style.STROKE);
 		compassPaint.setStrokeWidth(10);
+
+		c.translate(centerX, centerY);
+		c.rotate(-currentRoom.player.orientation);
 		c.drawCircle(0, 0, (screenWidth / 2) - 20, compassPaint);
-		// c.drawCircle(0, 0, (w / 2) - 30, black);
 		c.drawCircle(0, -(screenWidth / 2) + 20, 10, white);
 		c.restore();
 	}
