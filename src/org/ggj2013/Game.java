@@ -1,5 +1,7 @@
 package org.ggj2013;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -7,6 +9,9 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.ggj2013.Enemy.Size;
 import org.ggj2013.Room.RoomConfig;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
@@ -21,8 +26,13 @@ import android.util.Log;
 
 public class Game {
 
-	boolean debug = true;
-	boolean isCalibrated = false;
+	private final boolean debug = false;
+	public boolean isCalibrated = false;
+	public boolean isWon = false;
+	public boolean isLost = false;
+
+	public long startTime;
+	public long endTime = Long.MAX_VALUE;
 
 	private long timeDiff = 2000000; // 2ms
 	private long lastUpdate = -1;
@@ -32,9 +42,11 @@ public class Game {
 	public SoundManager soundManager;
 
 	public Rect settingsBounds;
+	public Rect backBounds;
 	public Rect resetBounds;
 
 	private Path arrow;
+	private final SimpleDateFormat df = new SimpleDateFormat("mm:ss:SSS");
 
 	public Game(FullscreenActivity activity, int level) {
 		this.activity = activity;
@@ -48,6 +60,12 @@ public class Game {
 	}
 
 	public void restart() {
+		isWon = false;
+		isLost = false;
+		isCalibrated = false;
+		resetBounds = null;
+		backBounds = null;
+		settingsBounds = null;
 		soundManager.stopAll();
 		Log.e("Start Room", "" + currentLevel);
 		currentRoom = new Room(levels.get(currentLevel - 1));
@@ -92,7 +110,7 @@ public class Game {
 		Paint redouterglow = createPaint(Color.RED, textsize, alpha);
 		redouterglow.setMaskFilter(new BlurMaskFilter(100, Blur.OUTER));
 		Paint white = createPaint(Color.WHITE, textsize * 2, alpha);
-		Paint grey = createPaint(Color.DKGRAY, textsize * 2, alpha);
+		Paint gray = createPaint(Color.DKGRAY, textsize * 2, alpha);
 		Paint black = createPaint(Color.BLACK, textsize, alpha);
 		Paint yellow = createPaint(Color.YELLOW, textsize, alpha);
 		Paint green = createPaint(Color.GREEN, textsize, alpha);
@@ -121,20 +139,98 @@ public class Game {
 		if (!isCalibrated) {
 			float yy = centerY - 5 * textsize;
 			drawTextCentered(c, red, "MAKE SHURE TO", w, centerX, yy);
-			drawTextCentered(c, red, "HAVE FREE SPACE", w, centerX, yy
-					+ textsize);
-			drawTextCentered(c, red, "IN FRONT OF YOU.", w, centerX, yy + 2
-					* textsize);
+			yy += textsize;
+			drawTextCentered(c, red, "HAVE FREE SPACE", w, centerX, yy);
+			yy += textsize;
+			drawTextCentered(c, red, "IN FRONT OF YOU.", w, centerX, yy);
 
+			yy += 2 * textsize;
 			int left = centerX - w / 4;
-			int top = (int) (yy + 4 * textsize - 20);
+			int top = (int) (yy + -20);
 			int right = centerX + w / 4;
-			int bottom = (int) (yy + 7 * textsize);
+			yy += 3 * textsize;
+			int bottom = (int) yy;
 			settingsBounds = new Rect(left, top, right, bottom);
 			c.drawRect(settingsBounds, white);
 			c.drawRect(new Rect(left + 4, top + 4, right - 4, bottom - 4),
 					black);
-			drawTextCentered(c, white, "OK", w, centerX, yy + 6 * textsize);
+			yy -= textsize;
+			drawTextCentered(c, white, "OK", w, centerX, yy);
+
+			return;
+		}
+
+		long now = System.currentTimeMillis();
+
+		if (isWon) {
+			long time = now - startTime;
+			if (time < endTime)
+				endTime = time;
+			setHighscore(currentLevel, endTime);
+
+			c.drawRect(c.getClipBounds(), white);
+			Paint p = createPaint(Color.DKGRAY, textsize, alpha);
+
+			float yy = centerY - 5 * textsize;
+			drawTextCentered(c, p, "YOU DID IT,", w, centerX, yy);
+			yy += textsize;
+			drawTextCentered(c, p, "YOU SAVED HER!", w, centerX, yy);
+			yy += textsize * 2;
+			drawTextCentered(c, p,
+					"YOUR TIME: " + df.format(new Date(endTime)), w, centerX,
+					yy);
+
+			yy += 2 * textsize;
+			int left = centerX + 20 - w / 2;
+			int top = (int) (yy + -20);
+			int right = centerX - 20 + w / 2;
+			yy += 3 * textsize;
+			int bottom = (int) yy;
+			backBounds = new Rect(left, top, right, bottom);
+			p = createPaint(Color.BLACK, textsize * 2, alpha);
+			c.drawRect(backBounds, p);
+			c.drawRect(new Rect(left + 4, top + 4, right - 4, bottom - 4),
+					white);
+			yy -= textsize;
+			drawTextCentered(c, p, "CONTINUE", w, centerX, yy);
+
+			return;
+		}
+
+		if (isLost) {
+			c.drawRect(c.getClipBounds(), red);
+			Paint p = createPaint(Color.WHITE, textsize, alpha);
+
+			float yy = centerY - 5 * textsize;
+			drawTextCentered(c, p, "YOU ARE DEAD! ", w, centerX, yy);
+			yy += textsize * 2;
+			drawTextCentered(c, p, "MIND THE CREATURES,", w, centerX, yy);
+			yy += textsize;
+			drawTextCentered(c, p, "THEY BITE!", w, centerX, yy);
+
+			yy += 2 * textsize;
+			int left = centerX + 20 - w / 2;
+			int top = (int) (yy + -20);
+			int right = centerX - 20 + w / 2;
+			yy += 3 * textsize;
+			int bottom = (int) yy;
+			backBounds = new Rect(left, top, right, bottom);
+			c.drawRect(backBounds, white);
+			c.drawRect(new Rect(left + 4, top + 4, right - 4, bottom - 4), red);
+			yy -= textsize;
+			drawTextCentered(c, white, "MAIN MENU", w, centerX, yy);
+
+			yy += 2 * textsize;
+			left = centerX + 20 - w / 2;
+			top = (int) (yy + -20);
+			right = centerX - 20 + w / 2;
+			yy += 3 * textsize;
+			bottom = (int) yy;
+			resetBounds = new Rect(left, top, right, bottom);
+			c.drawRect(resetBounds, white);
+			c.drawRect(new Rect(left + 4, top + 4, right - 4, bottom - 4), red);
+			yy -= textsize;
+			drawTextCentered(c, white, "TRY AGAIN", w, centerX, yy);
 
 			return;
 		}
@@ -187,7 +283,7 @@ public class Game {
 			}
 
 			// damsel
-			// paintGlow(c, currentRoom.damsel, centerX, centerY, w, h, 10,
+			// paintGlow(c, currentRoom.damsel, centerX, centerY, w, h, 2,
 			// greeninnerglow, greenouterglow);
 
 			if (debug) {
@@ -206,7 +302,7 @@ public class Game {
 			c.rotate(90f - (float) Math.toDegrees(currentRoom.player
 					.relativeOrientationFor(currentRoom.damsel).getAlpha()));
 			c.scale(5, 5);
-			c.drawPath(arrow, grey);
+			c.drawPath(arrow, gray);
 
 			if (debug) {
 				c.restore();
@@ -215,15 +311,25 @@ public class Game {
 						currentRoom.player.distanceTo(currentRoom.damsel)),
 						centerX - textsize, centerY - textsize, green);
 			}
-
-			currentRoom.onRender(c);
 		}
 
 		// TODO player pulse fade
 		alpha = (int) (127f + 128f * (Math
 				.sin(System.currentTimeMillis() % 1000000 * 0.001f)));
 		c.drawRect(c.getClipBounds(), createPaint(Color.BLACK, textsize, alpha));
+
+		Paint p = createPaint(Color.WHITE, textsize - 10, alpha);
+		p.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+		drawTextCentered(
+				c,
+				p,
+				"Level " + currentLevel + " "
+						+ df.format(new Date(now - startTime)), w, centerX,
+				textsize);
 	}
+
+	// //////////////////////////////////////////////////////////////////////////
+	// draw helper
 
 	private void paintGlow(Canvas c, Entity e, float centerX, float centerY,
 			float w, float h, int minDistance, Paint inner, Paint outer) {
@@ -251,7 +357,7 @@ public class Game {
 		p.setTextSize(textsize);
 		p.setStyle(Style.FILL);
 		p.setAlpha(alpha);
-		// p.setAntiAlias(true);
+		p.setAntiAlias(true);
 		p.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 		return p;
 	}
@@ -264,6 +370,27 @@ public class Game {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
+	// HighScore
+
+	public long getHighscore(int level) {
+		SharedPreferences prefs = activity.getSharedPreferences("DarkPulse",
+				Context.MODE_PRIVATE);
+		return prefs.getLong("level-" + level, 9999999);
+	}
+
+	public void setHighscore(int level, long time) {
+		long old = getHighscore(level);
+		if (old < time)
+			return;
+
+		SharedPreferences prefs = activity.getSharedPreferences("DarkPulse",
+				Context.MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		editor.putLong("level-" + level, time);
+		editor.commit();
+	}
+
+	// //////////////////////////////////////////////////////////////////////////
 	// Levels
 
 	LinkedList<RoomConfig> levels = new LinkedList<Room.RoomConfig>();
@@ -271,10 +398,26 @@ public class Game {
 	private void createLevels() {
 		// TODO Level 1
 		RoomConfig cfg = new RoomConfig();
+		cfg.context = this;
+		cfg.playerPosition = new Vector3D(0, 0, 0);
+		cfg.damselPosition = new Vector3D(0, 3, 0);
+		cfg.roomTopLeft = new Vector3D(-10, 10, 0);
+		cfg.roomTopRight = new Vector3D(10, 10, 0);
+		cfg.roomBottomLeft = new Vector3D(-10, -10, 0);
+		cfg.roomBottomRight = new Vector3D(10, -10, 0);
 		levels.add(cfg);
 
 		// TODO Level 2
 		cfg = new RoomConfig();
+		cfg.context = this;
+		cfg.playerPosition = new Vector3D(0, 0, 0);
+		cfg.damselPosition = new Vector3D(0, 10, 0);
+		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
+		cfg.enemies.put(new Vector3D(0, 5, 0), Size.SMALL);
+		cfg.roomTopLeft = new Vector3D(-10, 10, 0);
+		cfg.roomTopRight = new Vector3D(10, 10, 0);
+		cfg.roomBottomLeft = new Vector3D(-10, -10, 0);
+		cfg.roomBottomRight = new Vector3D(10, -10, 0);
 		levels.add(cfg);
 
 		// Level 3

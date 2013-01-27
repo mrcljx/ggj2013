@@ -8,9 +8,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.ggj2013.FullscreenActivity.Movement;
 
-import android.graphics.Canvas;
 import android.util.Log;
-import android.widget.Toast;
 
 public class Room {
 
@@ -22,7 +20,7 @@ public class Room {
 	public Player player;
 	public Damsel damsel;
 	public Status status = Status.ACTIVE;
-	private final Game context;
+	private final Game game;
 
 	private final Vector3D roomTopLeft;
 	private final Vector3D roomTopRight;
@@ -30,7 +28,7 @@ public class Room {
 	private final Vector3D roomBottomRight;
 
 	public Room(RoomConfig cfg) {
-		this.context = cfg.context;
+		this.game = cfg.context;
 
 		player = new Player("player");
 		player.position = cfg.playerPosition;
@@ -39,12 +37,14 @@ public class Room {
 		damsel.position = cfg.damselPosition;
 
 		enemies = new LinkedList<Enemy>();
-		for (int i = 0; i < cfg.enemies.size(); i++) {
-			Map.Entry<Vector3D, Enemy.Size> e = cfg.enemies.entrySet()
-					.iterator().next();
-			Enemy enemy = new Enemy("enemy-" + i, e.getValue());
-			enemy.position = e.getKey();
-			enemies.add(enemy);
+		if (cfg.enemies != null) {
+			for (int i = 0; i < cfg.enemies.size(); i++) {
+				Map.Entry<Vector3D, Enemy.Size> e = cfg.enemies.entrySet()
+						.iterator().next();
+				Enemy enemy = new Enemy("enemy-" + i, e.getValue());
+				enemy.position = e.getKey();
+				enemies.add(enemy);
+			}
 		}
 
 		roomTopLeft = cfg.roomTopLeft;
@@ -59,12 +59,12 @@ public class Room {
 		if (!startedSound) {
 			startedSound = true;
 
-			context.soundManager.play(damsel.name, SoundPackStandard.DAMSEL,
+			game.soundManager.play(damsel.name, SoundPackStandard.DAMSEL,
 					SoundManager.BALANCE_CENTER, 1f,
 					SoundManager.LOOPS_INFINITE);
 
 			for (Enemy e : enemies) {
-				context.soundManager.play(e.name, e.getSoundName(),
+				game.soundManager.play(e.name, e.getSoundName(),
 						SoundManager.BALANCE_CENTER, 1f,
 						SoundManager.LOOPS_INFINITE);
 			}
@@ -102,7 +102,7 @@ public class Room {
 				roomBottomRight)) {
 			Log.d("Collision", "Hits wall");
 			player.moveForward(-0.5f);
-			this.context.activity.vibrate();
+			this.game.activity.vibrate();
 			return;
 		} else {
 			for (Entity e : enemies) {
@@ -114,22 +114,22 @@ public class Room {
 			}
 		}
 
-		player.orientation = lowPass(context.activity.lastOrientation,
+		player.orientation = lowPass(game.activity.lastOrientation,
 				player.orientation, timeDiff * 10f);
 
-		if (context.activity.lastActivity == Movement.MOVING) {
+		if (game.activity.lastActivity == Movement.MOVING) {
 			player.moveForward(timeDiff);
 		}
 
 		if (startedSound) {
 			float[] balance = player.getBalanceForSoundFrom(damsel);
-			context.soundManager.changeVolume(damsel.name, balance, 1);
+			game.soundManager.changeVolume(damsel.name, balance, 1);
 
 			double minDistance = 10;
 
 			for (Enemy enemy : enemies) {
 				balance = player.getBalanceForSoundFrom(enemy);
-				context.soundManager.changeVolume(enemy.name, balance, 1);
+				game.soundManager.changeVolume(enemy.name, balance, 1);
 
 				double distance = player.distanceTo(enemy);
 				if (distance < minDistance) {
@@ -152,39 +152,32 @@ public class Room {
 
 			if (newHeartbeatLevel != player.heartbeatLevel) {
 				player.heartbeatLevel = newHeartbeatLevel;
-				player.playHeartBeatSound(context.soundManager);
+				player.playHeartBeatSound(game.soundManager);
 			}
 		}
 	}
 
 	private void onWonGame() {
-		context.soundManager.stopAll();
-		context.restart();
+		game.isWon = true;
+		game.soundManager.stopAll();
 
-		context.activity.runOnUiThread(new Runnable() {
+		game.activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(context.activity, "WON!", Toast.LENGTH_LONG)
-						.show();
-
-				context.soundManager.play("victory", SoundPackStandard.VICTORY,
+				game.soundManager.play("victory", SoundPackStandard.VICTORY,
 						SoundManager.BALANCE_CENTER, 1f, SoundManager.LOOPS_0);
-
 			}
 		});
 	}
 
 	private void onLostGame(Entity e) {
-		context.soundManager.stopAll();
-		context.restart();
+		game.isLost = true;
+		game.soundManager.stopAll();
 
-		context.activity.runOnUiThread(new Runnable() {
+		game.activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(context.activity, "LOST!", Toast.LENGTH_LONG)
-						.show();
-
-				context.soundManager.play("killed_by_enemy",
+				game.soundManager.play("killed_by_enemy",
 						SoundPackStandard.KILLED_BY_ENEMY,
 						SoundManager.BALANCE_CENTER, 1f, SoundManager.LOOPS_0);
 
@@ -192,9 +185,8 @@ public class Room {
 		});
 	}
 
-	public void onRender(Canvas c) {
-		// Whoa! Fancy graphics... not! :-P
-	}
+	// //////////////////////////////////////////////////////////////////////////
+	// RoomConfig
 
 	public static class RoomConfig {
 		Game context;
