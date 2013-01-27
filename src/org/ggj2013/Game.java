@@ -299,10 +299,11 @@ public class Game {
 			}
 		}
 
-		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds * 2)));
+		alpha = (int) (127f + 128f * (Math.sin(runningForSeconds
+				* currentRoom.player.heartbeatLevel)));
 		c.drawRect(c.getClipBounds(), createPaint(Color.BLACK, textsize, alpha));
 
-		Paint p = createPaint(Color.WHITE, textsize - 10, alpha);
+		Paint p = createPaint(Color.WHITE, textsize - 10, 255);
 		p.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
 		drawTextCentered(
 				c,
@@ -310,6 +311,10 @@ public class Game {
 				"Level " + currentLevel + " "
 						+ df.format(new Date(now - startTime)), w, centerX,
 				textsize);
+
+		// walls
+		float[] distance = currentRoom.getWallDistance(currentRoom.player);
+		// TODO wall
 	}
 
 	private void renderDamsel(Canvas c) {
@@ -429,7 +434,8 @@ public class Game {
 	public long getHighscore(int level) {
 		SharedPreferences prefs = activity.getSharedPreferences("DarkPulse",
 				Context.MODE_PRIVATE);
-		return prefs.getLong("level-" + level, 9999999);
+		return prefs
+				.getLong("level-" + level, 999 + 59 * 1000 + 59 * 1000 * 60);
 	}
 
 	public void setHighscore(int level, long time) {
@@ -453,7 +459,7 @@ public class Game {
 		// TODO Level 1
 		RoomConfig cfg = new RoomConfig();
 		cfg.playerPosition = new Vector3D(0, 0, 0);
-		cfg.damselPosition = new Vector3D(0, 3, 0);
+		cfg.damselPosition = new Vector3D(0, 4, 0);
 		cfg.left = -4;
 		cfg.right = 4;
 		cfg.top = 5;
@@ -463,31 +469,41 @@ public class Game {
 		// TODO Level 2
 		cfg = new RoomConfig();
 		cfg.playerPosition = new Vector3D(0, 0, 0);
-		cfg.damselPosition = new Vector3D(0, 10, 0);
+		cfg.damselPosition = new Vector3D(-7, 10, 0);
 		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
-		cfg.enemies.put(new Vector3D(0, 5, 0), Size.SMALL);
-		cfg.left = -4;
-		cfg.right = 4;
-		cfg.top = 10;
-		cfg.bottom = -10;
+		cfg.enemies.put(new Vector3D(0, 3, 0), Size.SMALL);
+		cfg.left = -8;
+		cfg.right = 8;
+		cfg.top = 20;
+		cfg.bottom = -2;
 		levels.add(cfg);
 
 		// Level 3
 		cfg = new RoomConfig();
 		cfg.playerPosition = new Vector3D(0, 0, 0);
-		cfg.damselPosition = new Vector3D(0, 10, 0);
+		cfg.damselPosition = new Vector3D(-4, 18, 0);
 		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
-		cfg.enemies.put(new Vector3D(5, 5, 0), Size.MEDIUM);
-		cfg.enemies.put(new Vector3D(-3, 8, 0), Size.BIG);
-		cfg.enemies.put(new Vector3D(0, -3, 0), Size.SMALL);
-		cfg.left = -5;
-		cfg.right = 5;
-		cfg.top = 10;
-		cfg.bottom = -10;
+		cfg.enemies.put(new Vector3D(-6, 5, 0), Size.MEDIUM);
+		cfg.enemies.put(new Vector3D(6, 8, 0), Size.BIG);
+		cfg.enemies.put(new Vector3D(3, 20, 0), Size.SMALL);
+		cfg.left = -10;
+		cfg.right = 10;
+		cfg.top = 20;
+		cfg.bottom = -2;
 		levels.add(cfg);
 
 		// TODO Level 4
 		cfg = new RoomConfig();
+		cfg.playerPosition = new Vector3D(0, 0, 0);
+		cfg.damselPosition = new Vector3D(22, 10, 0);
+		cfg.enemies = new HashMap<Vector3D, Enemy.Size>();
+		cfg.enemies.put(new Vector3D(8, 5, 0), Size.MEDIUM);
+		cfg.enemies.put(new Vector3D(-1, 8, 0), Size.BIG);
+		cfg.enemies.put(new Vector3D(10, 13, 0), Size.SMALL);
+		cfg.left = -4;
+		cfg.right = 25;
+		cfg.top = 15;
+		cfg.bottom = -2;
 		levels.add(cfg);
 
 		// TODO Level 5
