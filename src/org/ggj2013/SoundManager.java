@@ -71,7 +71,7 @@ public class SoundManager {
 		mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
-				// streamActive.put(ident, true);
+				streamActive.put(ident, true);
 			}
 		});
 

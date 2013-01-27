@@ -26,4 +26,9 @@ public class Enemy extends Entity {
 		}
 	}
 
+	@Override
+	public float volume() {
+		return 1;
+	}
+
 }

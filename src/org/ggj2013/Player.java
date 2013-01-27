@@ -11,7 +11,7 @@ public class Player extends Entity {
 		super(name);
 	}
 
-	float HEARING_MINIMUM = 3f;
+	float HEARING_MINIMUM = 1f;
 	int heartbeatLevel = 1;
 
 	public float[] getBalanceForSoundFrom(Entity e) {
@@ -33,11 +33,10 @@ public class Player extends Entity {
 				MathUtils.clamp(distanceVolume, 0, 1), 2);
 
 		if (normalized.getY() < 0) {
-			if (balance[0] <= 0.5f) {
-				balance[0] = 0;
-			} else if (balance[1] <= 0.5f) {
-				balance[1] = 0;
-			}
+			/*
+			 * if (balance[0] <= 0.5f) { balance[0] = 0; } else if (balance[1]
+			 * <= 0.5f) { balance[1] = 0; }
+			 */
 
 			distanceVolume *= (float) Math
 					.max(0, 1f + normalized.getY() * 1.3f);
