@@ -36,7 +36,7 @@ public class SoundPackStandard extends SoundPack {
 		sounds.put(SoundPackStandard.ENEMY_MEDIUM, R.raw.enemy_medium);
 		sounds.put(SoundPackStandard.ENEMY_SMALL, R.raw.enemy_small);
 
-		sounds.put(SoundPackStandard.DAMSEL, R.raw.damsel);
+		sounds.put(SoundPackStandard.DAMSEL, R.raw.beat);
 		sounds.put(SoundPackStandard.VICTORY, R.raw.victory);
 		sounds.put(SoundPackStandard.KILLED_BY_ENEMY, R.raw.killed_by_enemy);
 

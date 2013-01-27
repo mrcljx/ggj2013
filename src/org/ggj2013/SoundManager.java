@@ -26,6 +26,7 @@ public class SoundManager {
 
 	public Map<String, Integer> sounds = new HashMap<String, Integer>();
 	public Map<String, MediaPlayer> streams = new HashMap<String, MediaPlayer>();
+	public Map<String, Boolean> streamActive = new HashMap<String, Boolean>();
 
 	public SoundManager(Context appContext) {
 		this.appContext = appContext;
@@ -67,6 +68,13 @@ public class SoundManager {
 			}
 		});
 
+		mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				streamActive.put(ident, true);
+			}
+		});
+
 		if (loops == SoundManager.LOOPS_INFINITE) {
 			mediaPlayer.setLooping(true);
 		} else {
@@ -91,10 +99,10 @@ public class SoundManager {
 	public void changeVolume(String streamIdent, float[] balance,
 			float masterVolume) {
 
-		// TODO enable
-		// MediaPlayer mp = streams.get(streamIdent);
-		// if (mp != null)
-		// mp.setVolume(masterVolume * balance[0], masterVolume * balance[1]);
+		MediaPlayer mp = streams.get(streamIdent);
+		if (mp != null && streamActive.containsKey(streamIdent)
+				&& streamActive.get(streamIdent) == true)
+			mp.setVolume(masterVolume * balance[0], masterVolume * balance[1]);
 	}
 
 	public void stopAll() {

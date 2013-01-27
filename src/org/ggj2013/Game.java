@@ -29,7 +29,8 @@ public class Game {
 
 	public static final String TAG = Game.class.getSimpleName();
 
-	final boolean debug = false;
+	private final boolean debug = true;
+
 	public boolean isCalibrated = false;
 	public boolean isWon = false;
 	public boolean isLost = false;
@@ -406,8 +407,8 @@ public class Game {
 	private void createLevels() {
 		// TODO Level 1
 		RoomConfig cfg = new RoomConfig();
-		cfg.playerPosition = new Vector3D(0, 0, 0);
-		cfg.damselPosition = new Vector3D(0, 3, 0);
+		cfg.playerPosition = new Vector3D(0, 2, 0);
+		cfg.damselPosition = new Vector3D(3, 6, 0);
 		cfg.left = -4;
 		cfg.right = 5;
 		cfg.top = 5;
