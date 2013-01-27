@@ -17,6 +17,8 @@ public class Room {
 		ACTIVE, WON, LOST
 	}
 
+	public static final String TAG = FullscreenActivity.class.getSimpleName();
+
 	public final List<Enemy> enemies = new LinkedList<Enemy>();
 	public final Player player;
 	public final Damsel damsel;
@@ -100,7 +102,7 @@ public class Room {
 			return;
 		} else if (player.hitsWall(roomTopLeft, roomTopRight, roomBottomLeft,
 				roomBottomRight)) {
-			Log.d("Collision", "Hits wall");
+			Log.d(TAG, "Collision: Hits wall");
 			player.moveForward(-0.5f);
 			this.game.activity.vibrate();
 			return;

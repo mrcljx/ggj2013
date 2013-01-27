@@ -28,6 +28,8 @@ import android.view.WindowManager;
 public class FullscreenActivity extends Activity implements
 		SensorEventListener, OnTouchListener {
 
+	public static final String TAG = FullscreenActivity.class.getSimpleName();
+
 	private float mLastZ;
 
 	public Movement lastActivity;
@@ -64,7 +66,7 @@ public class FullscreenActivity extends Activity implements
 		Intent intent = getIntent();
 		int level = intent.getIntExtra("level", 1);
 
-		Log.e("Start Level", "" + level);
+		Log.i(TAG, String.format("Start Level: %d", level));
 
 		gameView = new GameView(this, level);
 		gameView.setOnTouchListener(this);
@@ -190,7 +192,7 @@ public class FullscreenActivity extends Activity implements
 			if (lastInactivityTimestamp + activityLag <= now) {
 				if (lastActivity != Movement.MOVING) {
 					lastActivity = Movement.MOVING;
-					Log.d("SENSOR", "Move");
+					Log.d(TAG, "Sensor: Move");
 				}
 			}
 		} else {
@@ -198,7 +200,7 @@ public class FullscreenActivity extends Activity implements
 			if (lastActivityTimestamp + inactivityLag <= now) {
 				if (lastActivity != Movement.NONE) {
 					lastActivity = Movement.NONE;
-					Log.d("SENSOR", "Stop");
+					Log.d(TAG, "Sensor: Stop");
 				}
 			}
 		}
@@ -211,7 +213,7 @@ public class FullscreenActivity extends Activity implements
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		Log.e("Finish", " " + event.getX());
+		Log.d(TAG, String.format("Finished touch at %.2f", event.getX()));
 		if (gameView.game.settingsBounds != null
 				&& gameView.game.settingsBounds.contains((int) event.getX(),
 						(int) event.getY())) {

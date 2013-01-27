@@ -26,6 +26,8 @@ import android.util.Log;
 
 public class Game {
 
+	public static final String TAG = FullscreenActivity.class.getSimpleName();
+
 	private final boolean debug = false;
 	public boolean isCalibrated = false;
 	public boolean isWon = false;
@@ -67,7 +69,7 @@ public class Game {
 		backBounds = null;
 		settingsBounds = null;
 		soundManager.stopAll();
-		Log.e("Start Room", "" + currentLevel);
+		Log.i(TAG, String.format("(Re-)started Room %d", currentLevel));
 		currentRoom = new Room(this, levels.get(currentLevel - 1));
 	}
 
